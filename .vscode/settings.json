@@ -1,0 +1,18 @@
+{
+    "files.associations": {
+        "optional": "cpp",
+        "system_error": "cpp",
+        "random": "cpp",
+        "*.tcc": "cpp",
+        "array": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "deque": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "vector": "cpp",
+        "initializer_list": "cpp",
+        "regex": "cpp"
+    },
+    "cmake.configureOnOpen": true
+}
