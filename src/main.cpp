@@ -2,14 +2,15 @@
 #include "TimeManager.h"
 #include "WifiManager.h"
 #include "HttpServerManager.h"
+#include "SerialComManager.h"
 
-#define CAMERA_MODEL_M5STACK_WIDE
 #define RXD2 33
 #define TXD2 4
 
 TimeManager *timeManager;
 WifiManager *wifiManager;
 HttpServerManager *httpServerManager;
+SerialComManager *serialComManager;
 
 void setup()
 {
@@ -19,11 +20,13 @@ void setup()
   timeManager = new TimeManager();
   wifiManager = new WifiManager();
   httpServerManager = new HttpServerManager();
+  serialComManager = new SerialComManager(timeManager, httpServerManager);
 }
 
 void loop()
 {
   timeManager->updateLoopTime();
+  serialComManager->receiveSerialData();
   // timeManager->displayLoopPerformanceStats();
 
   // Permet de laisser "respirer" l'esp et au serveur web de traiter les requêtes

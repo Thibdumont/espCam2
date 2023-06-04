@@ -9,6 +9,11 @@ HttpServerManager::HttpServerManager()
     init();
 }
 
+AsyncWebSocket *HttpServerManager::getWebSocket()
+{
+    return webSocket;
+}
+
 void HttpServerManager::init()
 {
 

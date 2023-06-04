@@ -9,6 +9,7 @@ class HttpServerManager
 {
 public:
     HttpServerManager();
+    AsyncWebSocket *getWebSocket();
     static void staticOnRoot(AsyncWebServerRequest *request, void *thisInstance)
     {
         HttpServerManager *self = reinterpret_cast<HttpServerManager *>(thisInstance);

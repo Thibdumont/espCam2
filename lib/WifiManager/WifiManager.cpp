@@ -2,8 +2,8 @@
 
 WifiManager::WifiManager()
 {
-    ssid = "Bernard's WiFi Network";
-    // ssid = "SFR_3228";
+    // ssid = "Bernard's WiFi Network";
+    ssid = "SFR_3228";
     password = "***REMOVED***";
 
     connect();
