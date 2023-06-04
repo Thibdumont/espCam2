@@ -21,5 +21,5 @@ void loop()
   // timeManager->displayLoopPerformanceStats();
 
   // Permet de laisser "respirer" l'esp et au serveur web de traiter les requêtes
-  // delay(2);
+  // delay(1000);
 }

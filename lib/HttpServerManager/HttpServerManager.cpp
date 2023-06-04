@@ -14,11 +14,11 @@ void HttpServerManager::init()
 
     webServer->on("/",
                   HTTP_GET,
-                  [](AsyncWebServerRequest *request)
-                  { request->send_P(200, "text/html", indexHtml); });
+                  [this](AsyncWebServerRequest *request)
+                  { HttpServerManager::staticOnRoot(request, this); });
     webServer->on("/actions", HTTP_GET,
                   [this](AsyncWebServerRequest *request)
-                  { HttpServerManager::staticOnRequest(request, this); });
+                  { HttpServerManager::staticOnAction(request, this); });
 
     webSocket->onEvent([this](AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
                        { HttpServerManager::staticOnWebSocketEvent(server, client, type, arg, data, len, this); });
@@ -28,7 +28,13 @@ void HttpServerManager::init()
     Serial.println("HTTP server started");
 }
 
-void HttpServerManager::onRequest(AsyncWebServerRequest *request)
+void HttpServerManager::onRoot(AsyncWebServerRequest *request)
+{
+    Serial.println("root requested");
+    request->send_P(200, "text/html", indexHtml);
+}
+
+void HttpServerManager::onAction(AsyncWebServerRequest *request)
 {
     std::array<String, 4> commands = {"direction", "servo",
                                       "speed", "speedAuto"};
@@ -36,12 +42,12 @@ void HttpServerManager::onRequest(AsyncWebServerRequest *request)
     {
         if (request->hasParam(command))
         {
-            processResponse(request, command);
+            processAction(request, command);
         }
     }
 }
 
-void HttpServerManager::processResponse(AsyncWebServerRequest *request, String param)
+void HttpServerManager::processAction(AsyncWebServerRequest *request, String param)
 {
     request->send(200);
     StaticJsonDocument<200> json;
