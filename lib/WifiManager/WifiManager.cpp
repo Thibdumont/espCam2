@@ -2,7 +2,7 @@
 
 WifiManager::WifiManager()
 {
-    // ssid = "Bernard's WiFi Network";
+    // ssid = "Bernard's WiFi Network"; NE MARCHE PAS AVEC LE SERVEUR HTTP
     ssid = "SFR_3228";
     password = "***REMOVED***";
 

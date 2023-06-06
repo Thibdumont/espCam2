@@ -33,8 +33,8 @@
         const maxVoltageFifoLength = 1000;
 
         const heartbeatMaxInterval = 3000;
-        const minDelayBetweenDirectionCommand = 200;
-        const directionSendTimeInterval = 200;
+        const minDelayBetweenDirectionCommand = 20;
+        const directionSendTimeInterval = 30;
 
         const gamepadPollingRate = 30;
 
@@ -56,7 +56,7 @@
         commandCounter = 0;
 
         const direction = new Vector2();
-        let speedThrottle = 1;
+        let speedThrottle = 0;
 
         initGamepad();
 

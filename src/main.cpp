@@ -15,7 +15,7 @@ SerialComManager *serialComManager;
 void setup()
 {
   Serial.begin(115200);
-  Serial2.begin(115200, SERIAL_8N1, RXD2, TXD2);
+  Serial2.begin(115200, SERIAL_8N1, RXD2, TXD2); // Nécessaire pour que le WIFI accepte de se connecter quand l'ESP et l'arduino sont connectés ensemble ???
 
   timeManager = new TimeManager();
   wifiManager = new WifiManager();
@@ -28,7 +28,4 @@ void loop()
   timeManager->updateLoopTime();
   serialComManager->receiveSerialData();
   // timeManager->displayLoopPerformanceStats();
-
-  // Permet de laisser "respirer" l'esp et au serveur web de traiter les requêtes
-  // delay(1000);
 }
