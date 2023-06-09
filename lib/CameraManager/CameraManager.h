@@ -26,6 +26,7 @@ class CameraManager
 {
 public:
     CameraManager();
+    camera_fb_t *capture();
 
 private:
     void init();

@@ -58,3 +58,16 @@ void CameraManager::init()
     s->set_vflip(s, 0);
     s->set_hmirror(s, 0);
 }
+
+camera_fb_t *CameraManager::capture()
+{
+    camera_fb_t *fb = esp_camera_fb_get();
+    if (!fb)
+    {
+        Serial.println("Camera capture failed");
+        return NULL;
+    }
+    esp_camera_fb_return(fb);
+
+    return fb;
+}
