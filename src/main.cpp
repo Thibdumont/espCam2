@@ -3,6 +3,7 @@
 #include "WifiManager.h"
 #include "HttpServerManager.h"
 #include "SerialComManager.h"
+#include "CameraManager.h"
 
 #define RXD2 33
 #define TXD2 4
@@ -11,6 +12,7 @@ TimeManager *timeManager;
 WifiManager *wifiManager;
 HttpServerManager *httpServerManager;
 SerialComManager *serialComManager;
+CameraManager *cameraManager;
 
 void setup()
 {
@@ -21,6 +23,7 @@ void setup()
   wifiManager = new WifiManager();
   httpServerManager = new HttpServerManager();
   serialComManager = new SerialComManager(timeManager, httpServerManager);
+  cameraManager = new CameraManager();
 }
 
 void loop()
