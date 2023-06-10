@@ -59,15 +59,20 @@ void CameraManager::init()
     s->set_hmirror(s, 0);
 }
 
-camera_fb_t *CameraManager::capture()
+void CameraManager::applyConfig()
 {
-    camera_fb_t *fb = esp_camera_fb_get();
-    if (!fb)
-    {
-        Serial.println("Camera capture failed");
-        return NULL;
+    sensor_t *cameraSensor = esp_camera_sensor_get();
+    // TODO
+    /*
+    if(!strcmp(variable, "framesize")) {
+        if(s->pixformat == PIXFORMAT_JPEG) res = s->set_framesize(s, (framesize_t)val);
     }
-    esp_camera_fb_return(fb);
-
-    return fb;
+    else if(!strcmp(variable, "quality")) res = s->set_quality(s, val);
+    else if(!strcmp(variable, "contrast")) res = s->set_contrast(s, val);
+    else if(!strcmp(variable, "brightness")) res = s->set_brightness(s, val);
+    else if(!strcmp(variable, "saturation")) res = s->set_saturation(s, val);
+    else if(!strcmp(variable, "gainceiling")) res = s->set_gainceiling(s, (gainceiling_t)val);
+    else if(!strcmp(variable, "hmirror")) res = s->set_hmirror(s, val);
+    else if(!strcmp(variable, "vflip")) res = s->set_vflip(s, val);
+    */
 }

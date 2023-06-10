@@ -311,6 +311,9 @@
                             if (json.hasOwnProperty('collisionAvoidance')) {
                                 json.collisionAvoidance ? document.querySelector('#collision-avoidance-switch').setAttribute('checked', '') : document.querySelector('#collision-avoidance-switch').removeAttribute('checked');
                             }
+                        } else {
+                            //Si on est trop désynchro, on se réaligne avec l'ESP
+                            commandCounter = json.commandCounter;
                         }
                         if (json.hasOwnProperty('distance')) {
                             document.querySelector('#distance-value').innerHTML = Math.min(parseInt(json.distance), 150);

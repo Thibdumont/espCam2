@@ -4,9 +4,8 @@ const char *indexHtml = R"rawText(
 test
 )rawText";
 
-HttpServerManager::HttpServerManager(CameraManager *cameraManager)
+HttpServerManager::HttpServerManager()
 {
-    this->cameraManager = cameraManager;
     init();
 }
 
@@ -28,6 +27,9 @@ void HttpServerManager::init()
     webServer->on("/capture", HTTP_GET,
                   [this](AsyncWebServerRequest *request)
                   { HttpServerManager::staticOnCapture(request, this); });
+    webServer->on("/stream", HTTP_GET,
+                  [this](AsyncWebServerRequest *request)
+                  { HttpServerManager::staticOnStream(request, this); });
 
     webSocket->onEvent([this](AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
                        { HttpServerManager::staticOnWebSocketEvent(server, client, type, arg, data, len, this); });
@@ -66,8 +68,21 @@ void HttpServerManager::processAction(AsyncWebServerRequest *request, String par
 
 void HttpServerManager::onCapture(AsyncWebServerRequest *request)
 {
-    camera_fb_t *fb = cameraManager->capture();
-    request->send_P(200, "image/jpeg", fb->buf, fb->len);
+    AsyncFrameResponse *response = new AsyncFrameResponse();
+    response->addHeader("Access-Control-Allow-Origin", "*");
+    request->send(response);
+}
+
+void HttpServerManager::onStream(AsyncWebServerRequest *request)
+{
+    AsyncJpegStreamResponse *response = new AsyncJpegStreamResponse();
+    if (!response)
+    {
+        request->send(501);
+        return;
+    }
+    response->addHeader("Access-Control-Allow-Origin", "*");
+    request->send(response);
 }
 
 void HttpServerManager::onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)

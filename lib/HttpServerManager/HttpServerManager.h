@@ -4,12 +4,13 @@
 #include <Arduino.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
-#include "CameraManager.h"
+#include "AsyncJpegStreamResponse.h"
+#include "AsyncFrameResponse.h"
 
 class HttpServerManager
 {
 public:
-    HttpServerManager(CameraManager *cameraManager);
+    HttpServerManager();
     AsyncWebSocket *getWebSocket();
     static void staticOnRoot(AsyncWebServerRequest *request, void *thisInstance)
     {
@@ -26,6 +27,12 @@ public:
         HttpServerManager *self = reinterpret_cast<HttpServerManager *>(thisInstance);
         self->onCapture(request);
     }
+    static void staticOnStream(AsyncWebServerRequest *request, void *thisInstance)
+    {
+        HttpServerManager *self = reinterpret_cast<HttpServerManager *>(thisInstance);
+        self->onStream(request);
+    }
+
     static void staticOnWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len, void *thisInstance)
     {
         HttpServerManager *self = reinterpret_cast<HttpServerManager *>(thisInstance);
@@ -36,11 +43,11 @@ private:
     AsyncWebSocketClient *asyncWebSocketClient;
     AsyncWebServer *webServer = new AsyncWebServer(80);
     AsyncWebSocket *webSocket = new AsyncWebSocket("/ws");
-    CameraManager *cameraManager;
     void init();
     void onRoot(AsyncWebServerRequest *);
     void onAction(AsyncWebServerRequest *);
     void onCapture(AsyncWebServerRequest *);
+    void onStream(AsyncWebServerRequest *);
     void processAction(AsyncWebServerRequest *, String);
     void onWebSocketEvent(AsyncWebSocket *, AsyncWebSocketClient *, AwsEventType, void *, uint8_t *, size_t);
 };

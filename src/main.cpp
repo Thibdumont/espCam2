@@ -22,7 +22,7 @@ void setup()
   timeManager = new TimeManager();
   wifiManager = new WifiManager();
   cameraManager = new CameraManager();
-  httpServerManager = new HttpServerManager(cameraManager);
+  httpServerManager = new HttpServerManager();
   serialComManager = new SerialComManager(timeManager, httpServerManager);
 }
 
