@@ -6,11 +6,13 @@
 #include <ArduinoJson.h>
 #include "AsyncJpegStreamResponse.h"
 #include "AsyncFrameResponse.h"
+#include "fileSystemManager.h"
+#include <LittleFS.h>
 
 class HttpServerManager
 {
 public:
-    HttpServerManager();
+    HttpServerManager(FileSystemManager *);
     AsyncWebSocket *getWebSocket();
     static void staticOnRoot(AsyncWebServerRequest *request, void *thisInstance)
     {
@@ -40,6 +42,7 @@ public:
     }
 
 private:
+    FileSystemManager *fileSystemManager;
     AsyncWebSocketClient *asyncWebSocketClient;
     AsyncWebServer *webServer = new AsyncWebServer(80);
     AsyncWebSocket *webSocket = new AsyncWebSocket("/ws");

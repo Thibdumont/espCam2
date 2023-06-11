@@ -1,11 +1,8 @@
 #include "HttpServerManager.h"
 
-const char *indexHtml = R"rawText(
-test
-)rawText";
-
-HttpServerManager::HttpServerManager()
+HttpServerManager::HttpServerManager(FileSystemManager *fileSystemManager)
 {
+    this->fileSystemManager = fileSystemManager;
     init();
 }
 
@@ -41,8 +38,8 @@ void HttpServerManager::init()
 
 void HttpServerManager::onRoot(AsyncWebServerRequest *request)
 {
-    Serial.println("root requested");
-    request->send_P(200, "text/html", indexHtml);
+    Serial.println("Root requested");
+    request->send(LittleFS, "/index.html", "text/html");
 }
 
 void HttpServerManager::onAction(AsyncWebServerRequest *request)
