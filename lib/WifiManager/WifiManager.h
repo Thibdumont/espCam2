@@ -13,6 +13,7 @@ private:
     String ssid;
     String password;
     void connect();
+    void softAP();
 };
 
 #endif

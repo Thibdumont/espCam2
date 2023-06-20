@@ -16,7 +16,7 @@ void FileSystemManager::init()
     {
         Serial.println("Unable to activate FileSystem");
     }
-    test();
+    // test();
 }
 
 void FileSystemManager::test()

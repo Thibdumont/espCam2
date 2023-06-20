@@ -13,11 +13,8 @@ AsyncWebSocket *HttpServerManager::getWebSocket()
 
 void HttpServerManager::init()
 {
+    registerUIFiles();
 
-    webServer->on("/",
-                  HTTP_GET,
-                  [this](AsyncWebServerRequest *request)
-                  { HttpServerManager::staticOnRoot(request, this); });
     webServer->on("/actions", HTTP_GET,
                   [this](AsyncWebServerRequest *request)
                   { HttpServerManager::staticOnAction(request, this); });
@@ -34,6 +31,34 @@ void HttpServerManager::init()
 
     webServer->begin();
     Serial.println("HTTP server started");
+}
+
+void HttpServerManager::registerUIFiles()
+{
+    webServer->on("/",
+                  HTTP_GET,
+                  [this](AsyncWebServerRequest *request)
+                  { HttpServerManager::staticOnRoot(request, this); });
+
+    webServer->on("/main.js",
+                  HTTP_GET,
+                  [this](AsyncWebServerRequest *request)
+                  { request->send(LittleFS, "/main.js", "text/javascript"); });
+
+    webServer->on("/polyfills.js",
+                  HTTP_GET,
+                  [this](AsyncWebServerRequest *request)
+                  { request->send(LittleFS, "/polyfills.js", "text/javascript"); });
+
+    webServer->on("/runtime.js",
+                  HTTP_GET,
+                  [this](AsyncWebServerRequest *request)
+                  { request->send(LittleFS, "/runtime.js", "text/javascript"); });
+
+    webServer->on("/styles.css",
+                  HTTP_GET,
+                  [this](AsyncWebServerRequest *request)
+                  { request->send(LittleFS, "/styles.css", "text/css"); });
 }
 
 void HttpServerManager::onRoot(AsyncWebServerRequest *request)

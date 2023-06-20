@@ -47,6 +47,7 @@ private:
     AsyncWebServer *webServer = new AsyncWebServer(80);
     AsyncWebSocket *webSocket = new AsyncWebSocket("/ws");
     void init();
+    void registerUIFiles();
     void onRoot(AsyncWebServerRequest *);
     void onAction(AsyncWebServerRequest *);
     void onCapture(AsyncWebServerRequest *);
