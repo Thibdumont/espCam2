@@ -35,20 +35,7 @@ void WifiManager::softAP()
     Serial.println(WiFi.softAPIP());
 }
 
-uint8_t WifiManager::getWifiStrength()
+int WifiManager::getWifiStrength()
 {
-    int wifiStrength = WiFi.RSSI();
-    if (wifiStrength < -50)
-    {
-        return 3;
-    }
-    if (wifiStrength < -60)
-    {
-        return 2;
-    }
-    if (wifiStrength < -70)
-    {
-        return 1;
-    }
-    return 0;
+    return WiFi.RSSI();
 }

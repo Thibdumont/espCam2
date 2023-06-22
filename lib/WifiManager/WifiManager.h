@@ -8,7 +8,7 @@ class WifiManager
 {
 public:
     WifiManager();
-    uint8_t getWifiStrength();
+    int getWifiStrength();
 
 private:
     String ssid;
