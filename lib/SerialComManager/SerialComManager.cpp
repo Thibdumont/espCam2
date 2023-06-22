@@ -2,7 +2,8 @@
 
 SerialComManager::SerialComManager(
     TimeManager *timeManager,
-    HttpServerManager *httpServerManager)
+    HttpServerManager *httpServerManager,
+    WifiManager *wifiManager)
 {
     this->timeManager = timeManager;
     this->httpServerManager = httpServerManager;
@@ -25,11 +26,29 @@ void SerialComManager::receiveSerialData()
     if (c == '}') // Data frame tail check
     {
         Serial.println(serialPortData);
-        httpServerManager->getWebSocket()->textAll(serialPortData);
+        StaticJsonDocument<200> json;
+        deserializeJson(json, serialPortData);
+
+        StaticJsonDocument<200> jsonESP;
+
+        jsonESP["heartbeat"] = json["heartbeat"];
+        jsonESP["commandCounter"] = json["commandCounter"];
+        jsonESP["maxSpeed"] = json["maxSpeed"];
+        jsonESP["servoAngle"] = json["servoAngle"];
+        jsonESP["distance"] = json["distance"];
+        jsonESP["loopDuration"] = json["loopDuration"];
+        jsonESP["batteryVoltage"] = json["batteryVoltage"];
+        jsonESP["wifiStrength"] = wifiManager->getWifiStrength();
+
+        char data[200];
+        serializeJson(jsonESP, data, 200);
+
+        httpServerManager->getWebSocket()->textAll(data);
+
         serialPortData = "";
     }
 }
 
-void SerialComManager::sendSerialData()
+void SerialComManager::sendSerialData(char *data)
 {
 }

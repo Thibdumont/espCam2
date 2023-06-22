@@ -34,3 +34,21 @@ void WifiManager::softAP()
     Serial.print("AP IP address : ");
     Serial.println(WiFi.softAPIP());
 }
+
+uint8_t WifiManager::getWifiStrength()
+{
+    int wifiStrength = WiFi.RSSI();
+    if (wifiStrength < -50)
+    {
+        return 3;
+    }
+    if (wifiStrength < -60)
+    {
+        return 2;
+    }
+    if (wifiStrength < -70)
+    {
+        return 1;
+    }
+    return 0;
+}

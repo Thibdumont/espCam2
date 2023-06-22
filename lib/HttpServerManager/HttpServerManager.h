@@ -6,7 +6,7 @@
 #include <ArduinoJson.h>
 #include "AsyncJpegStreamResponse.h"
 #include "AsyncFrameResponse.h"
-#include "fileSystemManager.h"
+#include "FileSystemManager.h"
 #include <LittleFS.h>
 
 class HttpServerManager
