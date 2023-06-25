@@ -36,9 +36,10 @@ void SerialComManager::receiveSerialData()
         jsonESP["maxSpeed"] = json["maxSpeed"];
         jsonESP["servoAngle"] = json["servoAngle"];
         jsonESP["distance"] = json["distance"];
-        jsonESP["loopDuration"] = json["loopDuration"];
+        jsonESP["unoLoopDuration"] = json["unoLoopDuration"];
         jsonESP["batteryVoltage"] = json["batteryVoltage"];
         jsonESP["wifiStrength"] = wifiManager->getWifiStrength();
+        jsonESP["espLoopDuration"] = timeManager->getLoopAverageDuration();
 
         char data[200];
         serializeJson(jsonESP, data, 200);
