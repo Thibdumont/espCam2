@@ -1,13 +1,17 @@
 #include "WifiManager.h"
+#include <string.h>
 
 WifiManager::WifiManager()
 {
-    connect();
-    // softAP();
+    softApMode = false;
+    startNetworkMode();
 }
 
-void WifiManager::connect()
+void WifiManager::startNetworkMode()
 {
+    WiFi.softAPdisconnect(true);
+    WiFi.mode(WIFI_STA);
+
     ssid = "SFR_3228";
     password = "***REMOVED***";
 
@@ -24,8 +28,11 @@ void WifiManager::connect()
     Serial.println(WiFi.localIP());
 }
 
-void WifiManager::softAP()
+void WifiManager::startSoftApMode()
 {
+    WiFi.disconnect(true);
+    WiFi.mode(WIFI_AP);
+
     ssid = "ESP32 AP";
     password = "esp-password";
 
@@ -37,5 +44,29 @@ void WifiManager::softAP()
 
 int WifiManager::getWifiStrength()
 {
-    return WiFi.RSSI();
+    if (softApMode)
+    {
+        return -100;
+    }
+    else
+    {
+        return WiFi.RSSI();
+    }
+}
+
+void WifiManager::detectWifiModeChange(boolean softApMode)
+{
+    // If the mode changed
+    if (softApMode != this->softApMode)
+    {
+        this->softApMode = softApMode;
+        if (softApMode)
+        {
+            startSoftApMode();
+        }
+        else
+        {
+            startNetworkMode();
+        }
+    }
 }

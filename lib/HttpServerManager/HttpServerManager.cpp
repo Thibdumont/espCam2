@@ -1,8 +1,11 @@
 #include "HttpServerManager.h"
 
-HttpServerManager::HttpServerManager(FileSystemManager *fileSystemManager)
+HttpServerManager::HttpServerManager(
+    FileSystemManager *fileSystemManager,
+    CameraManager *cameraManager)
 {
     this->fileSystemManager = fileSystemManager;
+    this->cameraManager = cameraManager;
     init();
 }
 
@@ -15,9 +18,6 @@ void HttpServerManager::init()
 {
     registerUIFiles();
 
-    webServer->on("/actions", HTTP_GET,
-                  [this](AsyncWebServerRequest *request)
-                  { HttpServerManager::staticOnAction(request, this); });
     webServer->on("/capture", HTTP_GET,
                   [this](AsyncWebServerRequest *request)
                   { HttpServerManager::staticOnCapture(request, this); });
@@ -38,7 +38,7 @@ void HttpServerManager::registerUIFiles()
     webServer->on("/",
                   HTTP_GET,
                   [this](AsyncWebServerRequest *request)
-                  { HttpServerManager::staticOnRoot(request, this); });
+                  { request->send(LittleFS, "/index.html", "text/html"); });
 
     webServer->on("/main.js",
                   HTTP_GET,
@@ -59,33 +59,6 @@ void HttpServerManager::registerUIFiles()
                   HTTP_GET,
                   [this](AsyncWebServerRequest *request)
                   { request->send(LittleFS, "/styles.css", "text/css"); });
-}
-
-void HttpServerManager::onRoot(AsyncWebServerRequest *request)
-{
-    Serial.println("Root requested");
-    request->send(LittleFS, "/index.html", "text/html");
-}
-
-void HttpServerManager::onAction(AsyncWebServerRequest *request)
-{
-    std::array<String, 4> commands = {"direction", "servo",
-                                      "speed", "speedAuto"};
-    for (const auto &command : commands)
-    {
-        if (request->hasParam(command))
-        {
-            processAction(request, command);
-        }
-    }
-}
-
-void HttpServerManager::processAction(AsyncWebServerRequest *request, String param)
-{
-    request->send(200);
-    StaticJsonDocument<200> json;
-    json[param] = request->getParam(param)->value();
-    serializeJson(json, Serial2);
 }
 
 void HttpServerManager::onCapture(AsyncWebServerRequest *request)
@@ -119,6 +92,7 @@ void HttpServerManager::onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketC
             {
                 data[len] = 0;
                 Serial2.println((char *)data);
+                processCommands((char *)data);
             }
         }
     }
@@ -132,5 +106,20 @@ void HttpServerManager::onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketC
     {
         asyncWebSocketClient = nullptr;
         Serial.println("Client disconnected");
+    }
+}
+
+void HttpServerManager::processCommands(char *json)
+{
+    StaticJsonDocument<200> jsonDoc;
+    deserializeJson(jsonDoc, json);
+
+    if (jsonDoc.containsKey("cameraResolution"))
+    {
+        cameraManager->changeResolution((int)jsonDoc["cameraResolution"]);
+    }
+    if (jsonDoc.containsKey("cameraQuality"))
+    {
+        cameraManager->changeQuality((int)jsonDoc["cameraQuality"]);
     }
 }

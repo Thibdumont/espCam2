@@ -8,13 +8,15 @@ class WifiManager
 {
 public:
     WifiManager();
+    void detectWifiModeChange(boolean softApMode);
     int getWifiStrength();
 
 private:
     String ssid;
     String password;
-    void connect();
-    void softAP();
+    boolean softApMode;
+    void startNetworkMode();
+    void startSoftApMode();
 };
 
 #endif

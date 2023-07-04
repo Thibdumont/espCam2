@@ -26,10 +26,13 @@ class CameraManager
 {
 public:
     CameraManager();
-    void applyConfig();
+    void changeResolution(int value);
+    void changeQuality(int value);
 
 private:
     void init();
+    int quality;
+    int resolution;
 };
 
 #endif

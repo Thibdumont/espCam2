@@ -2,28 +2,19 @@
 #define HTTP_SERVER_MANAGER_H
 
 #include <Arduino.h>
+#include <LittleFS.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
 #include "AsyncJpegStreamResponse.h"
 #include "AsyncFrameResponse.h"
 #include "FileSystemManager.h"
-#include <LittleFS.h>
+#include "CameraManager.h"
 
 class HttpServerManager
 {
 public:
-    HttpServerManager(FileSystemManager *);
+    HttpServerManager(FileSystemManager *, CameraManager *cameraManager);
     AsyncWebSocket *getWebSocket();
-    static void staticOnRoot(AsyncWebServerRequest *request, void *thisInstance)
-    {
-        HttpServerManager *self = reinterpret_cast<HttpServerManager *>(thisInstance);
-        self->onRoot(request);
-    }
-    static void staticOnAction(AsyncWebServerRequest *request, void *thisInstance)
-    {
-        HttpServerManager *self = reinterpret_cast<HttpServerManager *>(thisInstance);
-        self->onAction(request);
-    }
     static void staticOnCapture(AsyncWebServerRequest *request, void *thisInstance)
     {
         HttpServerManager *self = reinterpret_cast<HttpServerManager *>(thisInstance);
@@ -43,17 +34,17 @@ public:
 
 private:
     FileSystemManager *fileSystemManager;
+    CameraManager *cameraManager;
     AsyncWebSocketClient *asyncWebSocketClient;
     AsyncWebServer *webServer = new AsyncWebServer(80);
     AsyncWebSocket *webSocket = new AsyncWebSocket("/ws");
     void init();
     void registerUIFiles();
     void onRoot(AsyncWebServerRequest *);
-    void onAction(AsyncWebServerRequest *);
     void onCapture(AsyncWebServerRequest *);
     void onStream(AsyncWebServerRequest *);
-    void processAction(AsyncWebServerRequest *, String);
     void onWebSocketEvent(AsyncWebSocket *, AsyncWebSocketClient *, AwsEventType, void *, uint8_t *, size_t);
+    void processCommands(char *json);
 };
 
 #endif

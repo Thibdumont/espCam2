@@ -7,6 +7,7 @@ SerialComManager::SerialComManager(
 {
     this->timeManager = timeManager;
     this->httpServerManager = httpServerManager;
+    this->wifiManager = wifiManager;
     lastSendTime = 0;
     lastReceiveTime = 0;
 }
@@ -25,14 +26,13 @@ void SerialComManager::receiveSerialData()
     }
     if (c == '}') // Data frame tail check
     {
-        Serial.println(serialPortData);
+        // Serial.println(serialPortData);
         StaticJsonDocument<200> json;
         deserializeJson(json, serialPortData);
 
         StaticJsonDocument<200> jsonESP;
 
         jsonESP["heartbeat"] = json["heartbeat"];
-        jsonESP["commandCounter"] = json["commandCounter"];
         jsonESP["maxSpeed"] = json["maxSpeed"];
         jsonESP["servoAngle"] = json["servoAngle"];
         jsonESP["distance"] = json["distance"];
@@ -47,6 +47,13 @@ void SerialComManager::receiveSerialData()
         httpServerManager->getWebSocket()->textAll(data);
 
         serialPortData = "";
+
+        if (json.containsKey("wifiSoftApMode"))
+        {
+            boolean wifiSoftApMode = json["wifiSoftApMode"].as<String>().equals("true");
+            // Handle the switch between SoftAP and Local network mode
+            wifiManager->detectWifiModeChange(wifiSoftApMode);
+        }
     }
 }
 

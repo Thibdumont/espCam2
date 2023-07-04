@@ -52,27 +52,30 @@ void CameraManager::init()
         return;
     }
 
-    sensor_t *s = esp_camera_sensor_get();
+    sensor_t *cameraSensor = esp_camera_sensor_get();
 
-    s->set_framesize(s, FRAMESIZE_XGA);
-    s->set_vflip(s, 0);
-    s->set_hmirror(s, 0);
+    cameraSensor->set_framesize(cameraSensor, (framesize_t)8);
+    cameraSensor->set_quality(cameraSensor, 10);
+    cameraSensor->set_vflip(cameraSensor, 0);
+    cameraSensor->set_hmirror(cameraSensor, 0);
 }
 
-void CameraManager::applyConfig()
+void CameraManager::changeResolution(int value)
 {
-    sensor_t *cameraSensor = esp_camera_sensor_get();
-    // TODO
-    /*
-    if(!strcmp(variable, "framesize")) {
-        if(s->pixformat == PIXFORMAT_JPEG) res = s->set_framesize(s, (framesize_t)val);
+    if (resolution != value)
+    {
+        resolution = value;
+        sensor_t *cameraSensor = esp_camera_sensor_get();
+        cameraSensor->set_framesize(cameraSensor, (framesize_t)value);
     }
-    else if(!strcmp(variable, "quality")) res = s->set_quality(s, val);
-    else if(!strcmp(variable, "contrast")) res = s->set_contrast(s, val);
-    else if(!strcmp(variable, "brightness")) res = s->set_brightness(s, val);
-    else if(!strcmp(variable, "saturation")) res = s->set_saturation(s, val);
-    else if(!strcmp(variable, "gainceiling")) res = s->set_gainceiling(s, (gainceiling_t)val);
-    else if(!strcmp(variable, "hmirror")) res = s->set_hmirror(s, val);
-    else if(!strcmp(variable, "vflip")) res = s->set_vflip(s, val);
-    */
+}
+
+void CameraManager::changeQuality(int value)
+{
+    if (quality != value)
+    {
+        quality = value;
+        sensor_t *cameraSensor = esp_camera_sensor_get();
+        cameraSensor->set_quality(cameraSensor, value);
+    }
 }
