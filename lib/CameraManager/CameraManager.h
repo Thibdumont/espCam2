@@ -28,11 +28,17 @@ public:
     CameraManager();
     void changeResolution(int value);
     void changeQuality(int value);
+    void changeContrast(int value);
+    void changeBrightness(int value);
+    void changeSaturation(int value);
 
 private:
     void init();
     int quality;
     int resolution;
+    int contrast;
+    int brightness;
+    int saturation;
 };
 
 #endif

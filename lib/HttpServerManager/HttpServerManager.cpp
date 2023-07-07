@@ -118,8 +118,20 @@ void HttpServerManager::processCommands(char *json)
     {
         cameraManager->changeResolution((int)jsonDoc["cameraResolution"]);
     }
-    if (jsonDoc.containsKey("cameraQuality"))
+    else if (jsonDoc.containsKey("cameraQuality"))
     {
         cameraManager->changeQuality((int)jsonDoc["cameraQuality"]);
+    }
+    else if (jsonDoc.containsKey("cameraContrast"))
+    {
+        cameraManager->changeContrast((int)jsonDoc["cameraContrast"]);
+    }
+    else if (jsonDoc.containsKey("cameraBrightness"))
+    {
+        cameraManager->changeBrightness((int)jsonDoc["cameraBrightness"]);
+    }
+    else if (jsonDoc.containsKey("cameraSaturation"))
+    {
+        cameraManager->changeSaturation((int)jsonDoc["cameraSaturation"]);
     }
 }

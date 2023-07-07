@@ -79,3 +79,33 @@ void CameraManager::changeQuality(int value)
         cameraSensor->set_quality(cameraSensor, value);
     }
 }
+
+void CameraManager::changeContrast(int value)
+{
+    if (contrast != value)
+    {
+        contrast = value;
+        sensor_t *cameraSensor = esp_camera_sensor_get();
+        cameraSensor->set_contrast(cameraSensor, value);
+    }
+}
+
+void CameraManager::changeBrightness(int value)
+{
+    if (brightness != value)
+    {
+        brightness = value;
+        sensor_t *cameraSensor = esp_camera_sensor_get();
+        cameraSensor->set_brightness(cameraSensor, value);
+    }
+}
+
+void CameraManager::changeSaturation(int value)
+{
+    if (saturation != value)
+    {
+        saturation = value;
+        sensor_t *cameraSensor = esp_camera_sensor_get();
+        cameraSensor->set_saturation(cameraSensor, value);
+    }
+}
