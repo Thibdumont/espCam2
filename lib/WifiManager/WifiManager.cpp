@@ -9,7 +9,7 @@ WifiManager::WifiManager()
 
 void WifiManager::startNetworkMode()
 {
-    WiFi.softAPdisconnect(true);
+    WiFi.softAPdisconnect(false);
     WiFi.mode(WIFI_STA);
 
     ssid = "SFR_3228";
@@ -30,7 +30,7 @@ void WifiManager::startNetworkMode()
 
 void WifiManager::startSoftApMode()
 {
-    WiFi.disconnect(true);
+    WiFi.disconnect(false);
     WiFi.mode(WIFI_AP);
 
     ssid = "ESP32 AP";

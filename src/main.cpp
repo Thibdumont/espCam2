@@ -5,6 +5,7 @@
 #include "SerialComManager.h"
 #include "CameraManager.h"
 #include "FileSystemManager.h"
+#include "RobotStateManager.h"
 
 #define RXD2 33
 #define TXD2 4
@@ -15,6 +16,7 @@ HttpServerManager *httpServerManager;
 SerialComManager *serialComManager;
 CameraManager *cameraManager;
 FileSystemManager *fileSystemManager;
+RobotStateManager *robotStateManager;
 
 void setup()
 {
@@ -25,8 +27,9 @@ void setup()
   timeManager = new TimeManager();
   wifiManager = new WifiManager();
   cameraManager = new CameraManager();
-  httpServerManager = new HttpServerManager(fileSystemManager, cameraManager);
-  serialComManager = new SerialComManager(timeManager, httpServerManager, wifiManager);
+  robotStateManager = new RobotStateManager(cameraManager);
+  httpServerManager = new HttpServerManager(fileSystemManager, cameraManager, robotStateManager);
+  serialComManager = new SerialComManager(timeManager, httpServerManager, wifiManager, robotStateManager);
 }
 
 void loop()

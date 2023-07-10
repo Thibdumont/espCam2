@@ -2,6 +2,11 @@
 
 CameraManager::CameraManager()
 {
+    quality = 10;
+    resolution = 8;
+    contrast = 0;
+    brightness = 0;
+    saturation = 0;
     init();
 }
 
@@ -54,8 +59,8 @@ void CameraManager::init()
 
     sensor_t *cameraSensor = esp_camera_sensor_get();
 
-    cameraSensor->set_framesize(cameraSensor, (framesize_t)8);
-    cameraSensor->set_quality(cameraSensor, 10);
+    cameraSensor->set_framesize(cameraSensor, (framesize_t)resolution);
+    cameraSensor->set_quality(cameraSensor, quality);
     cameraSensor->set_vflip(cameraSensor, 0);
     cameraSensor->set_hmirror(cameraSensor, 0);
 }
@@ -108,4 +113,25 @@ void CameraManager::changeSaturation(int value)
         sensor_t *cameraSensor = esp_camera_sensor_get();
         cameraSensor->set_saturation(cameraSensor, value);
     }
+}
+
+int CameraManager::getQuality()
+{
+    return quality;
+}
+int CameraManager::getResolution()
+{
+    return resolution;
+}
+int CameraManager::getContrast()
+{
+    return contrast;
+}
+int CameraManager::getBrightness()
+{
+    return brightness;
+}
+int CameraManager::getSaturation()
+{
+    return saturation;
 }

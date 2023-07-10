@@ -3,13 +3,16 @@
 SerialComManager::SerialComManager(
     TimeManager *timeManager,
     HttpServerManager *httpServerManager,
-    WifiManager *wifiManager)
+    WifiManager *wifiManager,
+    RobotStateManager *robotStateManager)
 {
     this->timeManager = timeManager;
     this->httpServerManager = httpServerManager;
     this->wifiManager = wifiManager;
+    this->robotStateManager = robotStateManager;
     lastSendTime = 0;
     lastReceiveTime = 0;
+    handshakeDone = false;
 }
 
 void SerialComManager::receiveSerialData()
@@ -27,36 +30,77 @@ void SerialComManager::receiveSerialData()
     if (c == '}') // Data frame tail check
     {
         // Serial.println(serialPortData);
-        StaticJsonDocument<200> json;
+        StaticJsonDocument<300> json;
         deserializeJson(json, serialPortData);
-
-        StaticJsonDocument<200> jsonESP;
-
-        jsonESP["heartbeat"] = json["heartbeat"];
-        jsonESP["maxSpeed"] = json["maxSpeed"];
-        jsonESP["servoAngle"] = json["servoAngle"];
-        jsonESP["distance"] = json["distance"];
-        jsonESP["unoLoopDuration"] = json["unoLoopDuration"];
-        jsonESP["batteryVoltage"] = json["batteryVoltage"];
-        jsonESP["wifiStrength"] = wifiManager->getWifiStrength();
-        jsonESP["espLoopDuration"] = timeManager->getLoopAverageDuration();
-
-        char data[200];
-        serializeJson(jsonESP, data, 200);
-
-        httpServerManager->getWebSocket()->textAll(data);
-
         serialPortData = "";
 
-        if (json.containsKey("wifiSoftApMode"))
+        robotStateManager->extractJson(json);
+        processCommands();
+        sendDataToClient();
+
+        // After receiving data from Uno, we ask for a proper handshake to sync data
+        if (!handshakeDone)
         {
-            boolean wifiSoftApMode = json["wifiSoftApMode"].as<String>().equals("true");
-            // Handle the switch between SoftAP and Local network mode
-            wifiManager->detectWifiModeChange(wifiSoftApMode);
+            requestUnoHandshake();
+            handshakeDone = true;
         }
     }
 }
 
+void SerialComManager::processCommands()
+{
+    // Handle the switch between SoftAP and Local network mode
+    wifiManager->detectWifiModeChange(robotStateManager->wifiSoftApMode);
+}
+
+void SerialComManager::sendDataToClient()
+{
+    StaticJsonDocument<300> json;
+
+    json["heartbeat"] = robotStateManager->heartbeat;
+    if (robotStateManager->radarDistance != radarDistance)
+    {
+        radarDistance = robotStateManager->radarDistance;
+        json["radarDistance"] = radarDistance;
+    }
+    if (robotStateManager->unoLoopDuration != unoLoopDuration)
+    {
+        unoLoopDuration = robotStateManager->unoLoopDuration;
+        json["unoLoopDuration"] = unoLoopDuration;
+    }
+    if (robotStateManager->batteryVoltage != batteryVoltage)
+    {
+        batteryVoltage = robotStateManager->batteryVoltage;
+        json["batteryVoltage"] = batteryVoltage;
+    }
+    if (wifiManager->getWifiStrength() != wifiStrength)
+    {
+        wifiStrength = wifiManager->getWifiStrength();
+        json["wifiStrength"] = wifiStrength;
+    }
+    if (timeManager->getLoopAverageDuration() != espLoopDuration)
+    {
+        espLoopDuration = timeManager->getLoopAverageDuration();
+        json["espLoopDuration"] = espLoopDuration;
+    }
+
+    char data[300];
+    serializeJson(json, data, 300);
+
+    httpServerManager->getWebSocket()->textAll(data);
+}
+
+void SerialComManager::requestUnoHandshake()
+{
+    StaticJsonDocument<20> json;
+
+    json["handshake"] = true;
+    char data[20];
+    serializeJson(json, data, 20);
+    sendSerialData(data);
+}
+
 void SerialComManager::sendSerialData(char *data)
 {
+    Serial2.println(data);
 }

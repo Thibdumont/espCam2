@@ -31,6 +31,11 @@ public:
     void changeContrast(int value);
     void changeBrightness(int value);
     void changeSaturation(int value);
+    int getQuality();
+    int getResolution();
+    int getContrast();
+    int getBrightness();
+    int getSaturation();
 
 private:
     void init();

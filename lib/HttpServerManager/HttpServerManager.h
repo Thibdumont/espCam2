@@ -2,6 +2,7 @@
 #define HTTP_SERVER_MANAGER_H
 
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include <LittleFS.h>
 #include <ESPAsyncWebServer.h>
 #include <ArduinoJson.h>
@@ -9,11 +10,12 @@
 #include "AsyncFrameResponse.h"
 #include "FileSystemManager.h"
 #include "CameraManager.h"
+#include "RobotStateManager.h"
 
 class HttpServerManager
 {
 public:
-    HttpServerManager(FileSystemManager *, CameraManager *cameraManager);
+    HttpServerManager(FileSystemManager *, CameraManager *cameraManager, RobotStateManager *robotStateManager);
     AsyncWebSocket *getWebSocket();
     static void staticOnCapture(AsyncWebServerRequest *request, void *thisInstance)
     {
@@ -35,6 +37,7 @@ public:
 private:
     FileSystemManager *fileSystemManager;
     CameraManager *cameraManager;
+    RobotStateManager *robotStateManager;
     AsyncWebSocketClient *asyncWebSocketClient;
     AsyncWebServer *webServer = new AsyncWebServer(80);
     AsyncWebSocket *webSocket = new AsyncWebSocket("/ws");

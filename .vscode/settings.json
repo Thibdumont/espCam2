@@ -18,7 +18,8 @@
         "ostream": "cpp",
         "tuple": "cpp",
         "type_traits": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "memory": "cpp"
     },
     "cmake.configureOnOpen": true
 }

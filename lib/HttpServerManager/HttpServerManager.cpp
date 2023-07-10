@@ -2,10 +2,12 @@
 
 HttpServerManager::HttpServerManager(
     FileSystemManager *fileSystemManager,
-    CameraManager *cameraManager)
+    CameraManager *cameraManager,
+    RobotStateManager *robotStateManager)
 {
     this->fileSystemManager = fileSystemManager;
     this->cameraManager = cameraManager;
+    this->robotStateManager = robotStateManager;
     init();
 }
 
@@ -101,6 +103,11 @@ void HttpServerManager::onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketC
         Serial.println("Websocket client connection received");
         client->text("Connection established");
         asyncWebSocketClient = client;
+
+        char data[200];
+        serializeJson(robotStateManager->getRobotStateSummary(), data, 200);
+
+        webSocket->textAll(data);
     }
     else if (type == WS_EVT_DISCONNECT)
     {
@@ -111,7 +118,7 @@ void HttpServerManager::onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketC
 
 void HttpServerManager::processCommands(char *json)
 {
-    StaticJsonDocument<200> jsonDoc;
+    StaticJsonDocument<300> jsonDoc;
     deserializeJson(jsonDoc, json);
 
     if (jsonDoc.containsKey("cameraResolution"))
