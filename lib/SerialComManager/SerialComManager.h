@@ -25,8 +25,6 @@ private:
     boolean handshakeDone;
     unsigned long lastSendTime;
     unsigned long lastReceiveTime;
-    int maxSpeed;
-    uint8_t servoAngle;
     uint16_t radarDistance;
     float unoLoopDuration;
     float espLoopDuration;
