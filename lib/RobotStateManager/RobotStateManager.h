@@ -10,13 +10,15 @@ public:
     RobotStateManager(CameraManager *cameraManager);
     uint64_t heartbeat;
     uint8_t maxSpeed;
+    uint8_t safeStopDistance;
     uint16_t radarDistance;
     uint8_t servoAngle;
+    uint8_t servoSpeed;
     float batteryVoltage;
     uint32_t unoLoopDuration;
     boolean wifiSoftApMode;
-    void extractJson(StaticJsonDocument<300> json);
-    StaticJsonDocument<300> getRobotStateSummary();
+    void extractJson(StaticJsonDocument<400> json);
+    StaticJsonDocument<400> getRobotStateSummary();
 
 private:
     CameraManager *cameraManager;

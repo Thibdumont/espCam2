@@ -104,8 +104,8 @@ void HttpServerManager::onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketC
         client->text("Connection established");
         asyncWebSocketClient = client;
 
-        char data[200];
-        serializeJson(robotStateManager->getRobotStateSummary(), data, 200);
+        char data[400];
+        serializeJson(robotStateManager->getRobotStateSummary(), data, 400);
 
         webSocket->textAll(data);
     }

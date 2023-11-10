@@ -5,14 +5,16 @@ RobotStateManager::RobotStateManager(
 {
     this->cameraManager = cameraManager;
     maxSpeed = 0;
+    safeStopDistance = 0;
     radarDistance = 0;
     servoAngle = 0;
+    servoSpeed = 0;
     batteryVoltage = 0;
     unoLoopDuration = 0;
     wifiSoftApMode = false;
 }
 
-void RobotStateManager::extractJson(StaticJsonDocument<300> json)
+void RobotStateManager::extractJson(StaticJsonDocument<400> json)
 {
     if (json.containsKey("heartbeat"))
     {
@@ -22,9 +24,17 @@ void RobotStateManager::extractJson(StaticJsonDocument<300> json)
     {
         maxSpeed = (uint8_t)json["maxSpeed"];
     }
+    if (json.containsKey("safeStopDistance"))
+    {
+        safeStopDistance = (uint8_t)json["safeStopDistance"];
+    }
     if (json.containsKey("servoAngle"))
     {
         servoAngle = (uint8_t)json["servoAngle"];
+    }
+    if (json.containsKey("servoSpeed"))
+    {
+        servoSpeed = (uint8_t)json["servoSpeed"];
     }
     if (json.containsKey("radarDistance"))
     {
@@ -44,14 +54,16 @@ void RobotStateManager::extractJson(StaticJsonDocument<300> json)
     }
 }
 
-StaticJsonDocument<300> RobotStateManager::getRobotStateSummary()
+StaticJsonDocument<400> RobotStateManager::getRobotStateSummary()
 {
-    StaticJsonDocument<300> json;
+    StaticJsonDocument<400> json;
 
     json["handshake"] = 1;
     json["maxSpeed"] = maxSpeed;
     json["servoAngle"] = servoAngle;
+    json["servoSpeed"] = servoSpeed;
     json["radarDistance"] = radarDistance;
+    json["safeStopDistance"] = safeStopDistance;
     json["unoLoopDuration"] = unoLoopDuration;
     json["cameraQuality"] = cameraManager->getQuality();
     json["cameraResolution"] = cameraManager->getResolution();
