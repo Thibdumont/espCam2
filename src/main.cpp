@@ -25,7 +25,7 @@ void setup()
 
   robotSettingManager = new RobotSettingManager();
   timeManager = new TimeManager();
-  wifiManager = new WifiManager();
+  wifiManager = new WifiManager(robotSettingManager);
   cameraManager = new CameraManager(robotSettingManager);
   robotStateManager = new RobotStateManager(cameraManager);
   httpServerManager = new HttpServerManager(robotSettingManager, cameraManager, robotStateManager);

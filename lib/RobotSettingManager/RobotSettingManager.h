@@ -26,6 +26,10 @@ public:
     int getCameraContrast();
     int getCameraBrightness();
     int getCameraSaturation();
+    String getWifiLanSSID();
+    String getWifiLanPassword();
+    String getWifiSoftApSSID();
+    String getWifiSoftApPassword();
 
 private:
     void init();
@@ -37,6 +41,9 @@ private:
     int cameraContrast;
     int cameraBrightness;
     int cameraSaturation;
+    String wifiLanSSID;
+    String wifiLanPassword;
+    String wifiSoftApSSID;
+    String wifiSoftApPassword;
 };
-
 #endif

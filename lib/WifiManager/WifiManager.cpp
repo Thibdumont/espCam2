@@ -1,8 +1,8 @@
 #include "WifiManager.h"
-#include <string.h>
 
-WifiManager::WifiManager()
+WifiManager::WifiManager(RobotSettingManager *robotSettingManager)
 {
+    this->robotSettingManager = robotSettingManager;
     softApMode = false;
     startNetworkMode();
 }
@@ -12,8 +12,8 @@ void WifiManager::startNetworkMode()
     WiFi.softAPdisconnect(false);
     WiFi.mode(WIFI_STA);
 
-    ssid = "SFR_3228";
-    password = "***REMOVED***";
+    ssid = robotSettingManager->getWifiLanSSID();
+    password = robotSettingManager->getWifiLanPassword();
 
     WiFi.begin(ssid, password);
 
@@ -33,8 +33,8 @@ void WifiManager::startSoftApMode()
     WiFi.disconnect(false);
     WiFi.mode(WIFI_AP);
 
-    ssid = "ESP32 AP";
-    password = "esp-password";
+    ssid = robotSettingManager->getWifiSoftApSSID();
+    password = robotSettingManager->getWifiSoftApPassword();
 
     WiFi.softAP(ssid, password);
 
@@ -46,6 +46,7 @@ int WifiManager::getWifiStrength()
 {
     if (softApMode)
     {
+        // Can't figure out how to get RSSI in softApMode
         return -100;
     }
     else

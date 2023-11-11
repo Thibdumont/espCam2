@@ -66,7 +66,12 @@ void RobotSettingManager::loadSettings()
         cameraContrast = json["cameraContrast"];
         cameraBrightness = json["cameraBrightness"];
         cameraSaturation = json["cameraSaturation"];
+        wifiLanSSID = json["wifiLanSSID"].as<String>();
+        wifiLanPassword = json["wifiLanPassword"].as<String>();
+        wifiSoftApSSID = json["wifiSoftApSSID"].as<String>();
+        wifiSoftApPassword = json["wifiSoftApPassword"].as<String>();
 
+        Serial.println("Loading settings.json ...");
         serializeJsonPretty(json, Serial);
         Serial.println("");
         Serial.println("Settings loaded with success");
@@ -87,6 +92,10 @@ StaticJsonDocument<512> RobotSettingManager::getJsonDocument()
     json["cameraContrast"] = cameraContrast;
     json["cameraBrightness"] = cameraBrightness;
     json["cameraSaturation"] = cameraSaturation;
+    json["wifiLanSSID"] = wifiLanSSID;
+    json["wifiLanPassword"] = wifiLanPassword;
+    json["wifiSoftApSSID"] = wifiSoftApSSID;
+    json["wifiSoftApPassword"] = wifiSoftApPassword;
 
     return json;
 }
@@ -153,4 +162,21 @@ int RobotSettingManager::getCameraBrightness()
 int RobotSettingManager::getCameraSaturation()
 {
     return cameraSaturation;
+}
+
+String RobotSettingManager::getWifiLanSSID()
+{
+    return wifiLanSSID;
+}
+String RobotSettingManager::getWifiLanPassword()
+{
+    return wifiLanPassword;
+}
+String RobotSettingManager::getWifiSoftApSSID()
+{
+    return wifiSoftApSSID;
+}
+String RobotSettingManager::getWifiSoftApPassword()
+{
+    return wifiSoftApPassword;
 }

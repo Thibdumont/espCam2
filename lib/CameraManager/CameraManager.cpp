@@ -15,9 +15,6 @@ void CameraManager::init()
     brightness = robotSettingManager->getCameraBrightness();
     saturation = robotSettingManager->getCameraSaturation();
 
-    Serial.print("resolution : ");
-    Serial.println(resolution);
-
     camera_config_t config;
     config.ledc_channel = LEDC_CHANNEL_0;
     config.ledc_timer = LEDC_TIMER_0;
@@ -39,21 +36,13 @@ void CameraManager::init()
     config.pin_reset = RESET_GPIO_NUM;
     config.xclk_freq_hz = 20000000;
     config.pixel_format = PIXFORMAT_JPEG;
+    config.fb_count = 1;
 
-    // if PSRAM IC present, init with UXGA resolution and higher JPEG quality
-    //                      for larger pre-allocated frame buffer.
+    // if PSRAM IC present, double frame buffer
     if (psramFound())
     {
-        config.frame_size = FRAMESIZE_UXGA;
-        config.jpeg_quality = 10;
         config.fb_count = 2;
-        Serial.println("PsramFound ! Init camera to UXGA resolution");
-    }
-    else
-    {
-        config.frame_size = FRAMESIZE_SVGA;
-        config.jpeg_quality = 12;
-        config.fb_count = 1;
+        Serial.println("PSRAM found, doubling frame buffer for the camera");
     }
 
     // camera init

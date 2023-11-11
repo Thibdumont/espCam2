@@ -6,5 +6,9 @@
     "cameraQuality": 10,
     "cameraContrast": 0,
     "cameraBrightness": 0,
-    "cameraSaturation": 0
+    "cameraSaturation": 0,
+    "wifiLanSSID": "SFR_3228",
+    "wifiLanPassword": "***REMOVED***",
+    "wifiSoftApSSID": "ESP32 AP",
+    "wifiSoftApPassword": "esp-password"
 }
