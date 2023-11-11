@@ -6,15 +6,15 @@
 #include "HttpServerManager.h"
 #include "WifiManager.h"
 #include "RobotStateManager.h"
+#include "RobotSettingManager.h"
 
 #define SYSTEM_DATA_SEND_INTERVAL 500
 
 class SerialComManager
 {
 public:
-    SerialComManager(TimeManager *, HttpServerManager *, WifiManager *, RobotStateManager *);
+    SerialComManager(TimeManager *, HttpServerManager *, WifiManager *, RobotStateManager *, RobotSettingManager *);
     void receiveSerialData();
-    void sendSerialData(char *data);
     void requestUnoHandshake();
 
 private:
@@ -22,6 +22,7 @@ private:
     HttpServerManager *httpServerManager;
     WifiManager *wifiManager;
     RobotStateManager *robotStateManager;
+    RobotSettingManager *robotSettingManager;
     boolean handshakeDone;
     unsigned long lastSendTime;
     unsigned long lastReceiveTime;

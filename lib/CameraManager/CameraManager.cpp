@@ -1,17 +1,23 @@
 #include "CameraManager.h"
 
-CameraManager::CameraManager()
+CameraManager::CameraManager(RobotSettingManager *robotSettingManager)
 {
-    quality = 10;
-    resolution = 8;
-    contrast = 0;
-    brightness = 0;
-    saturation = 0;
+    this->robotSettingManager = robotSettingManager;
     init();
 }
 
 void CameraManager::init()
 {
+    // Load camera settings
+    resolution = robotSettingManager->getCameraResolution();
+    quality = robotSettingManager->getCameraQuality();
+    contrast = robotSettingManager->getCameraContrast();
+    brightness = robotSettingManager->getCameraBrightness();
+    saturation = robotSettingManager->getCameraSaturation();
+
+    Serial.print("resolution : ");
+    Serial.println(resolution);
+
     camera_config_t config;
     config.ledc_channel = LEDC_CHANNEL_0;
     config.ledc_timer = LEDC_TIMER_0;
@@ -41,6 +47,7 @@ void CameraManager::init()
         config.frame_size = FRAMESIZE_UXGA;
         config.jpeg_quality = 10;
         config.fb_count = 2;
+        Serial.println("PsramFound ! Init camera to UXGA resolution");
     }
     else
     {

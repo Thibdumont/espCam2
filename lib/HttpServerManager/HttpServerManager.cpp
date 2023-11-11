@@ -1,11 +1,11 @@
 #include "HttpServerManager.h"
 
 HttpServerManager::HttpServerManager(
-    FileSystemManager *fileSystemManager,
+    RobotSettingManager *robotSettingManager,
     CameraManager *cameraManager,
     RobotStateManager *robotStateManager)
 {
-    this->fileSystemManager = fileSystemManager;
+    this->robotSettingManager = robotSettingManager;
     this->cameraManager = cameraManager;
     this->robotStateManager = robotStateManager;
     init();
@@ -124,21 +124,39 @@ void HttpServerManager::processCommands(char *json)
     if (jsonDoc.containsKey("cameraResolution"))
     {
         cameraManager->changeResolution((int)jsonDoc["cameraResolution"]);
+        robotSettingManager->setCameraResolution((int)jsonDoc["cameraResolution"]);
     }
     else if (jsonDoc.containsKey("cameraQuality"))
     {
         cameraManager->changeQuality((int)jsonDoc["cameraQuality"]);
+        robotSettingManager->setCameraQuality((int)jsonDoc["cameraQuality"]);
     }
     else if (jsonDoc.containsKey("cameraContrast"))
     {
         cameraManager->changeContrast((int)jsonDoc["cameraContrast"]);
+        robotSettingManager->setCameraContrast((int)jsonDoc["cameraContrast"]);
     }
     else if (jsonDoc.containsKey("cameraBrightness"))
     {
         cameraManager->changeBrightness((int)jsonDoc["cameraBrightness"]);
+        robotSettingManager->setCameraBrightness((int)jsonDoc["cameraBrightness"]);
     }
     else if (jsonDoc.containsKey("cameraSaturation"))
     {
         cameraManager->changeSaturation((int)jsonDoc["cameraSaturation"]);
+        robotSettingManager->setCameraSaturation((int)jsonDoc["cameraSaturation"]);
+    }
+    // Save arduino commands to settings file
+    else if (jsonDoc.containsKey("maxSpeed"))
+    {
+        robotSettingManager->setMaxSpeed((uint16_t)jsonDoc["maxSpeed"]);
+    }
+    else if (jsonDoc.containsKey("servoSpeed"))
+    {
+        robotSettingManager->setServoSpeed((uint16_t)jsonDoc["servoSpeed"]);
+    }
+    else if (jsonDoc.containsKey("safeStopDistance"))
+    {
+        robotSettingManager->setSafeStopDistance((uint16_t)jsonDoc["safeStopDistance"]);
     }
 }

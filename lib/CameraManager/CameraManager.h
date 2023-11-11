@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "esp_camera.h"
+#include "RobotSettingManager.h"
 
 #define PWDN_GPIO_NUM -1
 #define RESET_GPIO_NUM 15
@@ -25,7 +26,7 @@
 class CameraManager
 {
 public:
-    CameraManager();
+    CameraManager(RobotSettingManager *);
     void changeResolution(int value);
     void changeQuality(int value);
     void changeContrast(int value);
@@ -39,6 +40,7 @@ public:
 
 private:
     void init();
+    RobotSettingManager *robotSettingManager;
     int quality;
     int resolution;
     int contrast;

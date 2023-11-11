@@ -1,0 +1,10 @@
+{
+    "maxSpeed": 100,
+    "servoSpeed": 100,
+    "safeStopDistance": 12,
+    "cameraResolution": 8,
+    "cameraQuality": 10,
+    "cameraContrast": 0,
+    "cameraBrightness": 0,
+    "cameraSaturation": 0
+}

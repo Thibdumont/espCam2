@@ -19,7 +19,8 @@
         "tuple": "cpp",
         "type_traits": "cpp",
         "utility": "cpp",
-        "memory": "cpp"
+        "memory": "cpp",
+        "fstream": "cpp"
     },
     "cmake.configureOnOpen": true
 }

@@ -8,14 +8,14 @@
 #include <ArduinoJson.h>
 #include "AsyncJpegStreamResponse.h"
 #include "AsyncFrameResponse.h"
-#include "FileSystemManager.h"
+#include "RobotSettingManager.h"
 #include "CameraManager.h"
 #include "RobotStateManager.h"
 
 class HttpServerManager
 {
 public:
-    HttpServerManager(FileSystemManager *, CameraManager *cameraManager, RobotStateManager *robotStateManager);
+    HttpServerManager(RobotSettingManager *, CameraManager *cameraManager, RobotStateManager *robotStateManager);
     AsyncWebSocket *getWebSocket();
     static void staticOnCapture(AsyncWebServerRequest *request, void *thisInstance)
     {
@@ -35,7 +35,7 @@ public:
     }
 
 private:
-    FileSystemManager *fileSystemManager;
+    RobotSettingManager *robotSettingManager;
     CameraManager *cameraManager;
     RobotStateManager *robotStateManager;
     AsyncWebSocketClient *asyncWebSocketClient;

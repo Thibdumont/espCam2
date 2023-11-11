@@ -4,12 +4,14 @@ SerialComManager::SerialComManager(
     TimeManager *timeManager,
     HttpServerManager *httpServerManager,
     WifiManager *wifiManager,
-    RobotStateManager *robotStateManager)
+    RobotStateManager *robotStateManager,
+    RobotSettingManager *robotSettingManager)
 {
     this->timeManager = timeManager;
     this->httpServerManager = httpServerManager;
     this->wifiManager = wifiManager;
     this->robotStateManager = robotStateManager;
+    this->robotSettingManager = robotSettingManager;
     lastSendTime = 0;
     lastReceiveTime = 0;
     handshakeDone = false;
@@ -92,15 +94,10 @@ void SerialComManager::sendDataToClient()
 
 void SerialComManager::requestUnoHandshake()
 {
+    // Send init settings to Uno before handshake
+    serializeJson(robotSettingManager->getJsonDocument(), Serial2);
+
     StaticJsonDocument<20> json;
-
     json["handshake"] = true;
-    char data[20];
-    serializeJson(json, data, 20);
-    sendSerialData(data);
-}
-
-void SerialComManager::sendSerialData(char *data)
-{
-    Serial2.println(data);
+    serializeJson(json, Serial2);
 }

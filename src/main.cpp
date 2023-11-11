@@ -4,7 +4,7 @@
 #include "HttpServerManager.h"
 #include "SerialComManager.h"
 #include "CameraManager.h"
-#include "FileSystemManager.h"
+#include "RobotSettingManager.h"
 #include "RobotStateManager.h"
 
 #define RXD2 33
@@ -15,7 +15,7 @@ WifiManager *wifiManager;
 HttpServerManager *httpServerManager;
 SerialComManager *serialComManager;
 CameraManager *cameraManager;
-FileSystemManager *fileSystemManager;
+RobotSettingManager *robotSettingManager;
 RobotStateManager *robotStateManager;
 
 void setup()
@@ -23,13 +23,13 @@ void setup()
   Serial.begin(115200);
   Serial2.begin(115200, SERIAL_8N1, RXD2, TXD2); // Nécessaire pour que le WIFI accepte de se connecter quand l'ESP et l'arduino sont connectés ensemble ???
 
-  fileSystemManager = new FileSystemManager();
+  robotSettingManager = new RobotSettingManager();
   timeManager = new TimeManager();
   wifiManager = new WifiManager();
-  cameraManager = new CameraManager();
+  cameraManager = new CameraManager(robotSettingManager);
   robotStateManager = new RobotStateManager(cameraManager);
-  httpServerManager = new HttpServerManager(fileSystemManager, cameraManager, robotStateManager);
-  serialComManager = new SerialComManager(timeManager, httpServerManager, wifiManager, robotStateManager);
+  httpServerManager = new HttpServerManager(robotSettingManager, cameraManager, robotStateManager);
+  serialComManager = new SerialComManager(timeManager, httpServerManager, wifiManager, robotStateManager, robotSettingManager);
 }
 
 void loop()
