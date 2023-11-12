@@ -14,7 +14,7 @@ SerialComManager::SerialComManager(
     this->robotSettingManager = robotSettingManager;
     lastSendTime = 0;
     lastReceiveTime = 0;
-    handshakeDone = false;
+    syncRequestSent = false;
 }
 
 void SerialComManager::receiveSerialData()
@@ -31,26 +31,31 @@ void SerialComManager::receiveSerialData()
     }
     if (c == '}') // Data frame tail check
     {
-        // Serial.println(serialPortData);
-        StaticJsonDocument<300> json;
-        deserializeJson(json, serialPortData);
-        serialPortData = "";
 
-        robotStateManager->extractJson(json);
-        processCommands();
+        processCommands(serialPortData);
         sendDataToClient();
 
-        // After receiving data from Uno, we ask for a proper handshake to sync data
-        if (!handshakeDone)
-        {
-            requestUnoHandshake();
-            handshakeDone = true;
-        }
+        // After receiving data from Uno for first time, we ask for a sync request
+        handleUnoSyncRequest();
     }
 }
 
-void SerialComManager::processCommands()
+void SerialComManager::processCommands(String serialPortData)
 {
+    StaticJsonDocument<300> json;
+    deserializeJson(json, serialPortData);
+    serialPortData = "";
+    if (json.containsKey("syncRequest"))
+    {
+        // Serial.println("SyncRequest received");
+        serializeJson(robotSettingManager->getJsonDocument(), Serial2);
+        // serializeJson(robotSettingManager->getJsonDocument(), Serial);
+    }
+
+    // serializeJson(json, Serial);
+
+    robotStateManager->extractJson(json);
+
     // Handle the switch between SoftAP and Local network mode
     wifiManager->detectWifiModeChange(robotStateManager->wifiSoftApMode);
 }
@@ -92,12 +97,17 @@ void SerialComManager::sendDataToClient()
     httpServerManager->getWebSocket()->textAll(data);
 }
 
-void SerialComManager::requestUnoHandshake()
+void SerialComManager::handleUnoSyncRequest()
 {
-    // Send init settings to Uno before handshake
-    serializeJson(robotSettingManager->getJsonDocument(), Serial2);
+    if (!syncRequestSent)
+    {
+        // Send init settings to Uno before sync request
+        serializeJson(robotSettingManager->getJsonDocument(), Serial2);
 
-    StaticJsonDocument<20> json;
-    json["handshake"] = true;
-    serializeJson(json, Serial2);
+        StaticJsonDocument<20> json;
+        json["syncRequest"] = true;
+        serializeJson(json, Serial2);
+
+        syncRequestSent = true;
+    }
 }
