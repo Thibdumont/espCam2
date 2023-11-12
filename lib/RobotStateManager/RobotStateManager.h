@@ -18,7 +18,7 @@ public:
     uint32_t unoLoopDuration;
     boolean wifiSoftApMode;
     void extractJson(StaticJsonDocument<400> json);
-    StaticJsonDocument<400> getRobotStateFirstSyncResponse();
+    StaticJsonDocument<400> getRobotStateSummary();
 
 private:
     CameraManager *cameraManager;

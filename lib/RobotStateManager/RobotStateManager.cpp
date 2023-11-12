@@ -54,11 +54,11 @@ void RobotStateManager::extractJson(StaticJsonDocument<400> json)
     }
 }
 
-StaticJsonDocument<400> RobotStateManager::getRobotStateFirstSyncResponse()
+StaticJsonDocument<400> RobotStateManager::getRobotStateSummary()
 {
     StaticJsonDocument<400> json;
 
-    json["syncRequest"] = 1;
+    json["handshake"] = 1;
     json["maxSpeed"] = maxSpeed;
     json["servoAngle"] = servoAngle;
     json["servoSpeed"] = servoSpeed;

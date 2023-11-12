@@ -105,7 +105,7 @@ void HttpServerManager::onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketC
         asyncWebSocketClient = client;
 
         char data[400];
-        serializeJson(robotStateManager->getRobotStateFirstSyncResponse(), data, 400);
+        serializeJson(robotStateManager->getRobotStateSummary(), data, 400);
 
         webSocket->textAll(data);
     }
