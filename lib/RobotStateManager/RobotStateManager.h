@@ -17,7 +17,7 @@ public:
     float batteryVoltage;
     uint32_t unoLoopDuration;
     uint8_t wifiSoftApMode;
-    void extractJson(StaticJsonDocument<400> json);
+    void extractRobotStateData(StaticJsonDocument<400> json);
     StaticJsonDocument<400> getRobotStateSummary();
 
 private:

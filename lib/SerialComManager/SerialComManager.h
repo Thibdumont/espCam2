@@ -15,7 +15,7 @@ class SerialComManager
 public:
     SerialComManager(TimeManager *, HttpServerManager *, WifiManager *, RobotStateManager *, RobotSettingManager *);
     void receiveSerialData();
-    void requestUnoHandshake();
+    void handleUnoSyncRequest();
 
 private:
     TimeManager *timeManager;
@@ -23,7 +23,9 @@ private:
     WifiManager *wifiManager;
     RobotStateManager *robotStateManager;
     RobotSettingManager *robotSettingManager;
-    boolean handshakeDone;
+    boolean syncRequestReceived;
+    boolean syncReplyReceived;
+    boolean syncRequestSent;
     unsigned long lastSendTime;
     unsigned long lastReceiveTime;
     uint16_t radarDistance;
@@ -31,7 +33,7 @@ private:
     float espLoopDuration;
     float batteryVoltage;
     int wifiStrength;
-    void processCommands();
+    void processCommands(String serialPortData);
     void sendDataToClient();
 };
 

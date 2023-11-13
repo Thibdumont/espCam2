@@ -14,7 +14,9 @@ SerialComManager::SerialComManager(
     this->robotSettingManager = robotSettingManager;
     lastSendTime = 0;
     lastReceiveTime = 0;
-    handshakeDone = false;
+    syncRequestReceived = false;
+    syncReplyReceived = false;
+    syncRequestSent = false;
 }
 
 void SerialComManager::receiveSerialData()
@@ -31,27 +33,32 @@ void SerialComManager::receiveSerialData()
     }
     if (c == '}') // Data frame tail check
     {
-        // Serial.println(serialPortData);
-        StaticJsonDocument<300> json;
-        deserializeJson(json, serialPortData);
+        processCommands(serialPortData);
 
-        robotStateManager->extractJson(json);
-        processCommands();
         sendDataToClient();
 
-        // After receiving data from Uno, we ask for a proper handshake to sync data
-        if (!handshakeDone)
-        {
-            requestUnoHandshake();
-            handshakeDone = true;
-        }
-
+        handleUnoSyncRequest();
         serialPortData = "";
     }
 }
 
-void SerialComManager::processCommands()
+void SerialComManager::processCommands(String serialPortData)
 {
+    StaticJsonDocument<400> json;
+    deserializeJson(json, serialPortData);
+
+    if (json.containsKey("syncRequest"))
+    {
+        syncRequestReceived = true;
+    }
+
+    if (json.containsKey("syncReply"))
+    {
+        syncReplyReceived = true;
+    }
+
+    robotStateManager->extractRobotStateData(json);
+
     // Handle the switch between SoftAP and Local network mode
     wifiManager->detectWifiModeChange(robotStateManager->wifiSoftApMode);
 }
@@ -93,10 +100,27 @@ void SerialComManager::sendDataToClient()
     httpServerManager->getWebSocket()->textAll(data);
 }
 
-void SerialComManager::requestUnoHandshake()
+void SerialComManager::handleUnoSyncRequest()
 {
-    // Send init settings to Uno before handshake
-    StaticJsonDocument<400> json = robotSettingManager->getUnoSettingDocument();
-    json["handshake"] = true;
-    serializeJson(json, Serial2);
+
+    // Process sync reply
+    if (syncReplyReceived)
+    {
+        char data[400];
+        serializeJson(robotStateManager->getRobotStateSummary(), data, 400);
+        httpServerManager->getWebSocket()->textAll(data);
+        syncReplyReceived = false;
+    }
+
+    // ESP has started, request a sync to Uno
+    if (!syncRequestSent || syncRequestReceived)
+    {
+        // Send init settings to Uno before sync request
+        StaticJsonDocument<512> json = robotSettingManager->getUnoSettingDocument();
+        json["syncRequest"] = true;
+        serializeJson(json, Serial2);
+
+        syncRequestSent = true;
+        syncRequestReceived = false;
+    }
 }

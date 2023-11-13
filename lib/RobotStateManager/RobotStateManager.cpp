@@ -14,7 +14,7 @@ RobotStateManager::RobotStateManager(
     wifiSoftApMode = 0;
 }
 
-void RobotStateManager::extractJson(StaticJsonDocument<400> json)
+void RobotStateManager::extractRobotStateData(StaticJsonDocument<400> json)
 {
     if (json.containsKey("heartbeat"))
     {
@@ -58,7 +58,7 @@ StaticJsonDocument<400> RobotStateManager::getRobotStateSummary()
 {
     StaticJsonDocument<400> json;
 
-    json["handshake"] = 1;
+    json["syncRequest"] = 1;
     json["maxSpeed"] = maxSpeed;
     json["servoAngle"] = servoAngle;
     json["servoSpeed"] = servoSpeed;
