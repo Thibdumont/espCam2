@@ -13,6 +13,7 @@ public:
     void saveSettings();
     void loadSettings();
     StaticJsonDocument<512> getJsonDocument();
+    StaticJsonDocument<400> getUnoSettingDocument();
     void setMaxSpeed(uint16_t);
     void setServoSpeed(uint16_t);
     void setSafeStopDistance(uint16_t);

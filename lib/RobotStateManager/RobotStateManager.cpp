@@ -11,7 +11,7 @@ RobotStateManager::RobotStateManager(
     servoSpeed = 0;
     batteryVoltage = 0;
     unoLoopDuration = 0;
-    wifiSoftApMode = false;
+    wifiSoftApMode = 0;
 }
 
 void RobotStateManager::extractJson(StaticJsonDocument<400> json)
@@ -50,7 +50,7 @@ void RobotStateManager::extractJson(StaticJsonDocument<400> json)
     }
     if (json.containsKey("wifiSoftApMode"))
     {
-        wifiSoftApMode = json["wifiSoftApMode"].as<String>().equals("true");
+        wifiSoftApMode = (uint8_t)json["wifiSoftApMode"];
     }
 }
 

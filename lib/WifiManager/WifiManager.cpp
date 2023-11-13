@@ -55,13 +55,13 @@ int WifiManager::getWifiStrength()
     }
 }
 
-void WifiManager::detectWifiModeChange(boolean softApMode)
+void WifiManager::detectWifiModeChange(uint8_t softApMode)
 {
     // If the mode changed
     if (softApMode != this->softApMode)
     {
         this->softApMode = softApMode;
-        if (softApMode)
+        if (softApMode == 1)
         {
             startSoftApMode();
         }

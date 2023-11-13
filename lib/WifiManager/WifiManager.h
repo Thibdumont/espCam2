@@ -10,14 +10,14 @@ class WifiManager
 {
 public:
     WifiManager(RobotSettingManager *);
-    void detectWifiModeChange(boolean softApMode);
+    void detectWifiModeChange(uint8_t softApMode);
     int getWifiStrength();
 
 private:
     RobotSettingManager *robotSettingManager;
     String ssid;
     String password;
-    boolean softApMode;
+    uint8_t softApMode;
     void startNetworkMode();
     void startSoftApMode();
 };

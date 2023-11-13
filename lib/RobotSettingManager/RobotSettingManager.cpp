@@ -100,6 +100,17 @@ StaticJsonDocument<512> RobotSettingManager::getJsonDocument()
     return json;
 }
 
+StaticJsonDocument<400> RobotSettingManager::getUnoSettingDocument()
+{
+    StaticJsonDocument<400> json;
+
+    json["maxSpeed"] = maxSpeed;
+    json["servoSpeed"] = servoSpeed;
+    json["safeStopDistance"] = safeStopDistance;
+
+    return json;
+}
+
 void RobotSettingManager::setMaxSpeed(uint16_t maxSpeed)
 {
     this->maxSpeed = maxSpeed;

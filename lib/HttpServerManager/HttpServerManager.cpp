@@ -93,7 +93,7 @@ void HttpServerManager::onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketC
             if (info->opcode == WS_TEXT)
             {
                 data[len] = 0;
-                Serial2.println((char *)data);
+                Serial2.print((char *)data);
                 processCommands((char *)data);
             }
         }

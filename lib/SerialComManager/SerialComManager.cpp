@@ -34,7 +34,6 @@ void SerialComManager::receiveSerialData()
         // Serial.println(serialPortData);
         StaticJsonDocument<300> json;
         deserializeJson(json, serialPortData);
-        serialPortData = "";
 
         robotStateManager->extractJson(json);
         processCommands();
@@ -46,6 +45,8 @@ void SerialComManager::receiveSerialData()
             requestUnoHandshake();
             handshakeDone = true;
         }
+
+        serialPortData = "";
     }
 }
 
@@ -95,9 +96,7 @@ void SerialComManager::sendDataToClient()
 void SerialComManager::requestUnoHandshake()
 {
     // Send init settings to Uno before handshake
-    serializeJson(robotSettingManager->getJsonDocument(), Serial2);
-
-    StaticJsonDocument<20> json;
+    StaticJsonDocument<400> json = robotSettingManager->getUnoSettingDocument();
     json["handshake"] = true;
     serializeJson(json, Serial2);
 }
