@@ -37,6 +37,10 @@ void WifiManager::startSoftApMode()
     password = robotSettingManager->getWifiSoftApPassword();
 
     WiFi.softAP(ssid, password);
+    IPAddress localIp(192, 168, 1, 1);
+    IPAddress gateway(192, 168, 1, 1);
+    IPAddress subnet(255, 255, 255, 0);
+    WiFi.softAPConfig(localIp, gateway, subnet);
 
     Serial.print("AP IP address : ");
     Serial.println(WiFi.softAPIP());
