@@ -70,28 +70,31 @@ void SerialComManager::sendDataToClient()
     json["heartbeat"] = robotStateManager->heartbeat;
     if (robotStateManager->radarDistance != radarDistance)
     {
-        radarDistance = robotStateManager->radarDistance;
-        json["radarDistance"] = radarDistance;
+        json["radarDistance"] = radarDistance = robotStateManager->radarDistance;
     }
-    if (robotStateManager->unoLoopDuration != unoLoopDuration)
+    if (robotStateManager->onGround != onGround)
     {
-        unoLoopDuration = robotStateManager->unoLoopDuration;
-        json["unoLoopDuration"] = unoLoopDuration;
+        json["onGround"] = onGround = robotStateManager->onGround;
     }
+
+    // Battery
     if (robotStateManager->batteryVoltage != batteryVoltage)
     {
-        batteryVoltage = robotStateManager->batteryVoltage;
-        json["batteryVoltage"] = batteryVoltage;
+        json["batteryVoltage"] = batteryVoltage = robotStateManager->batteryVoltage;
     }
+    // Wifi
     if (wifiManager->getWifiStrength() != wifiStrength)
     {
-        wifiStrength = wifiManager->getWifiStrength();
-        json["wifiStrength"] = wifiStrength;
+        json["wifiStrength"] = wifiStrength = wifiManager->getWifiStrength();
+    }
+    // Debug
+    if (robotStateManager->unoLoopDuration != unoLoopDuration)
+    {
+        json["unoLoopDuration"] = unoLoopDuration = robotStateManager->unoLoopDuration;
     }
     if (timeManager->getLoopAverageDuration() != espLoopDuration)
     {
-        espLoopDuration = timeManager->getLoopAverageDuration();
-        json["espLoopDuration"] = espLoopDuration;
+        json["espLoopDuration"] = espLoopDuration = timeManager->getLoopAverageDuration();
     }
 
     char data[300];

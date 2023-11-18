@@ -28,10 +28,16 @@ private:
     boolean syncRequestSent;
     unsigned long lastSendTime;
     unsigned long lastReceiveTime;
+    // Radar
     uint16_t radarDistance;
+    // IR Captor
+    uint8_t onGround;
+    // Debug
     float unoLoopDuration;
     float espLoopDuration;
+    // Battery
     float batteryVoltage;
+    // Wifi
     int wifiStrength;
     void processCommands(String serialPortData);
     void sendDataToClient();

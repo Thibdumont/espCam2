@@ -159,4 +159,16 @@ void HttpServerManager::processCommands(char *json)
     {
         robotSettingManager->setSafeStopDistance((uint16_t)jsonDoc["safeStopDistance"]);
     }
+    else if (jsonDoc.containsKey("turnFactor"))
+    {
+        robotSettingManager->setTurnFactor((float)jsonDoc["turnFactor"]);
+    }
+    else if (jsonDoc.containsKey("autoSpeedFactor"))
+    {
+        robotSettingManager->setAutoSpeedFactor((float)jsonDoc["autoSpeedFactor"]);
+    }
+    else if (jsonDoc.containsKey("autoSpeedMode"))
+    {
+        robotSettingManager->setAutoSpeedMode((uint8_t)jsonDoc["autoSpeedMode"]);
+    }
 }

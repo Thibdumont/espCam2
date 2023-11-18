@@ -58,14 +58,20 @@ void RobotSettingManager::loadSettings()
     }
     else
     {
+        // Motor
         maxSpeed = json["maxSpeed"];
         servoSpeed = json["servoSpeed"];
         safeStopDistance = json["safeStopDistance"];
+        turnFactor = json["turnFactor"];
+        autoSpeedFactor = json["autoSpeedFactor"];
+        autoSpeedMode = json["autoSpeedMode"];
+        // Camera
         cameraResolution = json["cameraResolution"];
         cameraQuality = json["cameraQuality"];
         cameraContrast = json["cameraContrast"];
         cameraBrightness = json["cameraBrightness"];
         cameraSaturation = json["cameraSaturation"];
+        // Wifi
         wifiLanSSID = json["wifiLanSSID"].as<String>();
         wifiLanPassword = json["wifiLanPassword"].as<String>();
         wifiSoftApSSID = json["wifiSoftApSSID"].as<String>();
@@ -84,14 +90,20 @@ StaticJsonDocument<512> RobotSettingManager::getJsonDocument()
 {
     StaticJsonDocument<512> json;
 
+    // Motor
     json["maxSpeed"] = maxSpeed;
     json["servoSpeed"] = servoSpeed;
     json["safeStopDistance"] = safeStopDistance;
+    json["turnFactor"] = turnFactor;
+    json["autoSpeedFactor"] = autoSpeedFactor;
+    json["autoSpeedMode"] = autoSpeedMode;
+    // Camera
     json["cameraResolution"] = cameraResolution;
     json["cameraQuality"] = cameraQuality;
     json["cameraContrast"] = cameraContrast;
     json["cameraBrightness"] = cameraBrightness;
     json["cameraSaturation"] = cameraSaturation;
+    // Wifi
     json["wifiLanSSID"] = wifiLanSSID;
     json["wifiLanPassword"] = wifiLanPassword;
     json["wifiSoftApSSID"] = wifiSoftApSSID;
@@ -107,10 +119,14 @@ StaticJsonDocument<400> RobotSettingManager::getUnoSettingDocument()
     json["maxSpeed"] = maxSpeed;
     json["servoSpeed"] = servoSpeed;
     json["safeStopDistance"] = safeStopDistance;
+    json["turnFactor"] = turnFactor;
+    json["autoSpeedFactor"] = autoSpeedFactor;
+    json["autoSpeedMode"] = autoSpeedMode;
 
     return json;
 }
 
+// Motor
 void RobotSettingManager::setMaxSpeed(uint16_t maxSpeed)
 {
     this->maxSpeed = maxSpeed;
@@ -128,6 +144,26 @@ void RobotSettingManager::setSafeStopDistance(uint16_t safeStopDistance)
     this->safeStopDistance = safeStopDistance;
     saveSettings();
 }
+
+void RobotSettingManager::setTurnFactor(float turnFactor)
+{
+    this->turnFactor = turnFactor;
+    saveSettings();
+}
+
+void RobotSettingManager::setAutoSpeedFactor(float autoSpeedFactor)
+{
+    this->autoSpeedFactor = autoSpeedFactor;
+    saveSettings();
+}
+
+void RobotSettingManager::setAutoSpeedMode(uint8_t autoSpeedMode)
+{
+    this->autoSpeedMode = autoSpeedMode;
+    saveSettings();
+}
+
+// Camera
 void RobotSettingManager::setCameraResolution(int cameraResolution)
 {
     this->cameraResolution = cameraResolution;
@@ -175,6 +211,7 @@ int RobotSettingManager::getCameraSaturation()
     return cameraSaturation;
 }
 
+// Wifi
 String RobotSettingManager::getWifiLanSSID()
 {
     return wifiLanSSID;

@@ -2,13 +2,16 @@
     "maxSpeed": 100,
     "servoSpeed": 100,
     "safeStopDistance": 12,
+    "turnFactor": 2,
+    "autoSpeedFactor": 2,
+    "autoSpeedMode": 1,
     "cameraResolution": 8,
     "cameraQuality": 10,
     "cameraContrast": 0,
     "cameraBrightness": 0,
     "cameraSaturation": 0,
     "wifiLanSSID": "SFR_3228",
-    "wifiLanPassword": "**your-lan-password**",
+    "wifiLanPassword": "lan-password",
     "wifiSoftApSSID": "ESP32 AP",
     "wifiSoftApPassword": "esp-password"
 }
