@@ -140,8 +140,8 @@ StaticJsonDocument<1024> RobotStateManager::getRobotStateSummary()
     // Radar
     json["radarDistance"] = radarDistance;
 
-    // Debug
-    json["unoLoopDuration"] = unoLoopDuration;
+    // IR captor
+    json["onGround"] = onGround;
 
     // Camera
     json["cameraQuality"] = cameraManager->getQuality();
@@ -156,6 +156,9 @@ StaticJsonDocument<1024> RobotStateManager::getRobotStateSummary()
     json["hudOnGround"] = hudOnGround;
     json["hudUnoLoopTime"] = hudUnoLoopTime;
     json["hudEspLoopTime"] = hudEspLoopTime;
+
+    // Debug
+    json["unoLoopDuration"] = unoLoopDuration;
 
     return json;
 }
