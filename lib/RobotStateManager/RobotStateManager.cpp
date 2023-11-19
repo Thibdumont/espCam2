@@ -143,6 +143,9 @@ StaticJsonDocument<1024> RobotStateManager::getRobotStateSummary()
     // IR captor
     json["onGround"] = onGround;
 
+    // Battery
+    json["batteryVoltage"] = batteryVoltage;
+
     // Camera
     json["cameraQuality"] = cameraManager->getQuality();
     json["cameraResolution"] = cameraManager->getResolution();

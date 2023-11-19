@@ -107,7 +107,6 @@ void SerialComManager::handleUnoSyncRequest()
     // Uno has replied to sync request, send to the client a summary of the robot state
     if (syncReplyReceived)
     {
-
         char data[1024];
         serializeJson(robotStateManager->getRobotStateSummary(), data, 1024);
         httpServerManager->getWebSocket()->textAll(data);
