@@ -1,12 +1,7 @@
 #include "HttpServerManager.h"
 
-HttpServerManager::HttpServerManager(
-    RobotSettingManager *robotSettingManager,
-    CameraManager *cameraManager,
-    RobotStateManager *robotStateManager)
+HttpServerManager::HttpServerManager(RobotStateManager *robotStateManager)
 {
-    this->robotSettingManager = robotSettingManager;
-    this->cameraManager = cameraManager;
     this->robotStateManager = robotStateManager;
     init();
 }
@@ -104,8 +99,8 @@ void HttpServerManager::onWebSocketEvent(AsyncWebSocket *server, AsyncWebSocketC
         client->text("Connection established");
         asyncWebSocketClient = client;
 
-        char data[400];
-        serializeJson(robotStateManager->getRobotStateSummary(), data, 400);
+        char data[1024];
+        serializeJson(robotStateManager->getRobotStateSummary(), data, 1024);
 
         webSocket->textAll(data);
     }
@@ -123,52 +118,70 @@ void HttpServerManager::processCommands(char *json)
 
     if (jsonDoc.containsKey("cameraResolution"))
     {
-        cameraManager->changeResolution((int)jsonDoc["cameraResolution"]);
-        robotSettingManager->setCameraResolution((int)jsonDoc["cameraResolution"]);
+        robotStateManager->setCameraResolution((int)jsonDoc["cameraResolution"]);
     }
     else if (jsonDoc.containsKey("cameraQuality"))
     {
-        cameraManager->changeQuality((int)jsonDoc["cameraQuality"]);
-        robotSettingManager->setCameraQuality((int)jsonDoc["cameraQuality"]);
+        robotStateManager->setCameraQuality((int)jsonDoc["cameraQuality"]);
     }
     else if (jsonDoc.containsKey("cameraContrast"))
     {
-        cameraManager->changeContrast((int)jsonDoc["cameraContrast"]);
-        robotSettingManager->setCameraContrast((int)jsonDoc["cameraContrast"]);
+        robotStateManager->setCameraContrast((int)jsonDoc["cameraContrast"]);
     }
     else if (jsonDoc.containsKey("cameraBrightness"))
     {
-        cameraManager->changeBrightness((int)jsonDoc["cameraBrightness"]);
-        robotSettingManager->setCameraBrightness((int)jsonDoc["cameraBrightness"]);
+        robotStateManager->setCameraBrightness((int)jsonDoc["cameraBrightness"]);
     }
     else if (jsonDoc.containsKey("cameraSaturation"))
     {
-        cameraManager->changeSaturation((int)jsonDoc["cameraSaturation"]);
-        robotSettingManager->setCameraSaturation((int)jsonDoc["cameraSaturation"]);
+        robotStateManager->setCameraSaturation((int)jsonDoc["cameraSaturation"]);
     }
     // Save arduino commands to settings file
+    // Motor
     else if (jsonDoc.containsKey("maxSpeed"))
     {
-        robotSettingManager->setMaxSpeed((uint16_t)jsonDoc["maxSpeed"]);
-    }
-    else if (jsonDoc.containsKey("servoSpeed"))
-    {
-        robotSettingManager->setServoSpeed((uint16_t)jsonDoc["servoSpeed"]);
+        robotStateManager->setMaxSpeed((uint16_t)jsonDoc["maxSpeed"]);
     }
     else if (jsonDoc.containsKey("safeStopDistance"))
     {
-        robotSettingManager->setSafeStopDistance((uint16_t)jsonDoc["safeStopDistance"]);
-    }
-    else if (jsonDoc.containsKey("turnFactor"))
-    {
-        robotSettingManager->setTurnFactor((float)jsonDoc["turnFactor"]);
+        robotStateManager->setSafeStopDistance((uint16_t)jsonDoc["safeStopDistance"]);
     }
     else if (jsonDoc.containsKey("autoSpeedFactor"))
     {
-        robotSettingManager->setAutoSpeedFactor((float)jsonDoc["autoSpeedFactor"]);
+        robotStateManager->setAutoSpeedFactor((float)jsonDoc["autoSpeedFactor"]);
     }
     else if (jsonDoc.containsKey("autoSpeedMode"))
     {
-        robotSettingManager->setAutoSpeedMode((uint8_t)jsonDoc["autoSpeedMode"]);
+        robotStateManager->setAutoSpeedMode((uint8_t)jsonDoc["autoSpeedMode"]);
+    }
+    else if (jsonDoc.containsKey("turnFactor"))
+    {
+        robotStateManager->setTurnFactor((float)jsonDoc["turnFactor"]);
+    }
+    // Servo
+    else if (jsonDoc.containsKey("servoSpeed"))
+    {
+        robotStateManager->setServoSpeed((uint16_t)jsonDoc["servoSpeed"]);
+    }
+    // HUD
+    else if (jsonDoc.containsKey("hudRadarDistance"))
+    {
+        robotStateManager->setHudRadarDistance((uint8_t)jsonDoc["hudRadarDistance"]);
+    }
+    else if (jsonDoc.containsKey("hudBatteryVoltage"))
+    {
+        robotStateManager->setHudBatteryVoltage((uint8_t)jsonDoc["hudBatteryVoltage"]);
+    }
+    else if (jsonDoc.containsKey("hudOnGround"))
+    {
+        robotStateManager->setHudOnGround((uint8_t)jsonDoc["hudOnGround"]);
+    }
+    else if (jsonDoc.containsKey("hudUnoLoopTime"))
+    {
+        robotStateManager->setHudUnoLoopTime((uint8_t)jsonDoc["hudUnoLoopTime"]);
+    }
+    else if (jsonDoc.containsKey("hudEspLoopTime"))
+    {
+        robotStateManager->setHudEspLoopTime((uint8_t)jsonDoc["hudEspLoopTime"]);
     }
 }

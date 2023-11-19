@@ -27,9 +27,9 @@ void setup()
   timeManager = new TimeManager();
   wifiManager = new WifiManager(robotSettingManager);
   cameraManager = new CameraManager(robotSettingManager);
-  robotStateManager = new RobotStateManager(cameraManager);
-  httpServerManager = new HttpServerManager(robotSettingManager, cameraManager, robotStateManager);
-  serialComManager = new SerialComManager(timeManager, httpServerManager, wifiManager, robotStateManager, robotSettingManager);
+  robotStateManager = new RobotStateManager(cameraManager, robotSettingManager);
+  httpServerManager = new HttpServerManager(robotStateManager);
+  serialComManager = new SerialComManager(timeManager, httpServerManager, wifiManager, robotStateManager);
 }
 
 void loop()

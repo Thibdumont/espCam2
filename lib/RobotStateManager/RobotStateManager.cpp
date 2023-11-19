@@ -1,9 +1,9 @@
 #include "RobotStateManager.h"
 
-RobotStateManager::RobotStateManager(
-    CameraManager *cameraManager)
+RobotStateManager::RobotStateManager(CameraManager *cameraManager, RobotSettingManager *robotSettingManager)
 {
     this->cameraManager = cameraManager;
+    this->robotSettingManager = robotSettingManager;
     maxSpeed = 0;
     safeStopDistance = 0;
     turnFactor = 0;
@@ -16,9 +16,16 @@ RobotStateManager::RobotStateManager(
     unoLoopDuration = 0;
     wifiSoftApMode = 0;
     onGround = 0;
+    hudRadarDistance = 0;
+    hudBatteryVoltage = 0;
+    hudOnGround = 0;
+    hudUnoLoopTime = 0;
+    hudEspLoopTime = 0;
+
+    extractRobotStateData(this->robotSettingManager->getJsonDocument());
 }
 
-void RobotStateManager::extractRobotStateData(StaticJsonDocument<400> json)
+void RobotStateManager::extractRobotStateData(StaticJsonDocument<1024> json)
 {
     if (json.containsKey("heartbeat"))
     {
@@ -63,12 +70,6 @@ void RobotStateManager::extractRobotStateData(StaticJsonDocument<400> json)
         radarDistance = (uint16_t)json["radarDistance"];
     }
 
-    // Debug
-    if (json.containsKey("unoLoopDuration"))
-    {
-        unoLoopDuration = (uint32_t)json["unoLoopDuration"];
-    }
-
     // Battery
     if (json.containsKey("batteryVoltage"))
     {
@@ -81,16 +82,47 @@ void RobotStateManager::extractRobotStateData(StaticJsonDocument<400> json)
         wifiSoftApMode = (uint8_t)json["wifiSoftApMode"];
     }
 
+    // HUD
+    if (json.containsKey("hudRadarDistance"))
+    {
+        hudRadarDistance = (uint8_t)json["hudRadarDistance"];
+    }
+    if (json.containsKey("hudBatteryVoltage"))
+    {
+        hudBatteryVoltage = (uint8_t)json["hudBatteryVoltage"];
+    }
+    if (json.containsKey("hudOnGround"))
+    {
+        hudOnGround = (uint8_t)json["hudOnGround"];
+    }
+    if (json.containsKey("hudUnoLoopTime"))
+    {
+        hudUnoLoopTime = (uint8_t)json["hudUnoLoopTime"];
+    }
+    if (json.containsKey("hudEspLoopTime"))
+    {
+        hudEspLoopTime = (uint8_t)json["hudEspLoopTime"];
+    }
+
     // IR captor
     if (json.containsKey("onGround"))
     {
         onGround = (uint8_t)json["onGround"];
     }
+
+    // Debug
+    if (json.containsKey("unoLoopDuration"))
+    {
+        unoLoopDuration = (uint32_t)json["unoLoopDuration"];
+    }
 }
 
-StaticJsonDocument<400> RobotStateManager::getRobotStateSummary()
+/**
+ * Get robot state summary to be send to the client
+ */
+StaticJsonDocument<1024> RobotStateManager::getRobotStateSummary()
 {
-    StaticJsonDocument<400> json;
+    StaticJsonDocument<1024> json;
 
     json["syncRequest"] = 1;
 
@@ -118,5 +150,112 @@ StaticJsonDocument<400> RobotStateManager::getRobotStateSummary()
     json["cameraBrightness"] = cameraManager->getBrightness();
     json["cameraSaturation"] = cameraManager->getSaturation();
 
+    // HUD
+    json["hudRadarDistance"] = hudRadarDistance;
+    json["hudBatteryVoltage"] = hudBatteryVoltage;
+    json["hudOnGround"] = hudOnGround;
+    json["hudUnoLoopTime"] = hudUnoLoopTime;
+    json["hudEspLoopTime"] = hudEspLoopTime;
+
     return json;
+}
+
+StaticJsonDocument<512> RobotStateManager::getUnoSettingDocument()
+{
+    StaticJsonDocument<512> json;
+
+    json["maxSpeed"] = maxSpeed;
+    json["servoSpeed"] = servoSpeed;
+    json["safeStopDistance"] = safeStopDistance;
+    json["turnFactor"] = turnFactor;
+    json["autoSpeedFactor"] = autoSpeedFactor;
+    json["autoSpeedMode"] = autoSpeedMode;
+
+    return json;
+}
+
+// Motor
+void RobotStateManager::setMaxSpeed(uint16_t maxSpeed)
+{
+    this->maxSpeed = maxSpeed;
+    this->robotSettingManager->setMaxSpeed(maxSpeed);
+}
+
+void RobotStateManager::setServoSpeed(uint16_t servoSpeed)
+{
+    this->servoSpeed = servoSpeed;
+    this->robotSettingManager->setServoSpeed(servoSpeed);
+}
+
+void RobotStateManager::setSafeStopDistance(uint16_t safeStopDistance)
+{
+    this->safeStopDistance = safeStopDistance;
+    this->robotSettingManager->setSafeStopDistance(safeStopDistance);
+}
+
+void RobotStateManager::setTurnFactor(float turnFactor)
+{
+    this->turnFactor = turnFactor;
+    this->robotSettingManager->setTurnFactor(turnFactor);
+}
+
+void RobotStateManager::setAutoSpeedFactor(float autoSpeedFactor)
+{
+    this->autoSpeedFactor = autoSpeedFactor;
+    this->robotSettingManager->setAutoSpeedFactor(autoSpeedFactor);
+}
+
+void RobotStateManager::setAutoSpeedMode(uint8_t autoSpeedMode)
+{
+    this->autoSpeedMode = autoSpeedMode;
+    this->robotSettingManager->setAutoSpeedMode(autoSpeedMode);
+}
+
+// Camera
+void RobotStateManager::setCameraResolution(int cameraResolution)
+{
+    this->cameraManager->changeResolution(cameraResolution);
+}
+void RobotStateManager::setCameraQuality(int cameraQuality)
+{
+    this->cameraManager->changeQuality(cameraQuality);
+}
+void RobotStateManager::setCameraContrast(int cameraContrast)
+{
+    this->cameraManager->changeContrast(cameraContrast);
+}
+void RobotStateManager::setCameraBrightness(int cameraBrightness)
+{
+    this->cameraManager->changeBrightness(cameraBrightness);
+}
+void RobotStateManager::setCameraSaturation(int cameraSaturation)
+{
+    this->cameraManager->changeSaturation(cameraSaturation);
+}
+
+// HUD
+void RobotStateManager::setHudRadarDistance(uint8_t hudRadarDistance)
+{
+    this->hudRadarDistance = hudRadarDistance;
+    this->robotSettingManager->setHudRadarDistance(hudRadarDistance);
+}
+void RobotStateManager::setHudBatteryVoltage(uint8_t hudBatteryVoltage)
+{
+    this->hudBatteryVoltage = hudBatteryVoltage;
+    this->robotSettingManager->setHudBatteryVoltage(hudBatteryVoltage);
+}
+void RobotStateManager::setHudOnGround(uint8_t hudOnGround)
+{
+    this->hudOnGround = hudOnGround;
+    this->robotSettingManager->setHudOnGround(hudOnGround);
+}
+void RobotStateManager::setHudUnoLoopTime(uint8_t hudUnoLoopTime)
+{
+    this->hudUnoLoopTime = hudUnoLoopTime;
+    this->robotSettingManager->setHudUnoLoopTime(hudUnoLoopTime);
+}
+void RobotStateManager::setHudEspLoopTime(uint8_t hudEspLoopTime)
+{
+    this->hudEspLoopTime = hudEspLoopTime;
+    this->robotSettingManager->setHudEspLoopTime(hudEspLoopTime);
 }

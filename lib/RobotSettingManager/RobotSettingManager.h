@@ -12,8 +12,7 @@ public:
     RobotSettingManager();
     void saveSettings();
     void loadSettings();
-    StaticJsonDocument<512> getJsonDocument();
-    StaticJsonDocument<400> getUnoSettingDocument();
+    StaticJsonDocument<1024> getJsonDocument();
     // Motor
     void setMaxSpeed(uint16_t);
     void setServoSpeed(uint16_t);
@@ -37,9 +36,15 @@ public:
     String getWifiLanPassword();
     String getWifiSoftApSSID();
     String getWifiSoftApPassword();
+    // HUD
+    void setHudRadarDistance(uint8_t);
+    void setHudBatteryVoltage(uint8_t);
+    void setHudOnGround(uint8_t);
+    void setHudUnoLoopTime(uint8_t);
+    void setHudEspLoopTime(uint8_t);
 
 private:
-    void init();
+    void initFS();
     // Motor
     uint16_t maxSpeed;
     uint16_t servoSpeed;
@@ -59,5 +64,11 @@ private:
     String wifiLanPassword;
     String wifiSoftApSSID;
     String wifiSoftApPassword;
+    // HUD
+    uint8_t hudRadarDistance;
+    uint8_t hudBatteryVoltage;
+    uint8_t hudOnGround;
+    uint8_t hudUnoLoopTime;
+    uint8_t hudEspLoopTime;
 };
 #endif

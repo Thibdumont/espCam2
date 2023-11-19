@@ -2,11 +2,11 @@
 
 RobotSettingManager::RobotSettingManager()
 {
-    init();
+    initFS();
     loadSettings();
 }
 
-void RobotSettingManager::init()
+void RobotSettingManager::initFS()
 {
     if (LittleFS.begin())
     {
@@ -29,7 +29,7 @@ void RobotSettingManager::saveSettings()
         return;
     }
 
-    StaticJsonDocument<512> json = this->getJsonDocument();
+    StaticJsonDocument<1024> json = this->getJsonDocument();
 
     // Serialize JSON to settings.json
     if (serializeJson(json, file) == 0)
@@ -42,7 +42,7 @@ void RobotSettingManager::saveSettings()
 
 void RobotSettingManager::loadSettings()
 {
-    StaticJsonDocument<512> json;
+    StaticJsonDocument<1024> json;
 
     File file = LittleFS.open(SETTINGS_FILE, "r");
     if (!file)
@@ -76,6 +76,12 @@ void RobotSettingManager::loadSettings()
         wifiLanPassword = json["wifiLanPassword"].as<String>();
         wifiSoftApSSID = json["wifiSoftApSSID"].as<String>();
         wifiSoftApPassword = json["wifiSoftApPassword"].as<String>();
+        // HUD
+        hudRadarDistance = json["hudRadarDistance"];
+        hudBatteryVoltage = json["hudBatteryVoltage"];
+        hudOnGround = json["hudOnGround"];
+        hudUnoLoopTime = json["hudUnoLoopTime"];
+        hudEspLoopTime = json["hudEspLoopTime"];
 
         Serial.println("Loading settings.json ...");
         serializeJsonPretty(json, Serial);
@@ -86,9 +92,9 @@ void RobotSettingManager::loadSettings()
     file.close();
 }
 
-StaticJsonDocument<512> RobotSettingManager::getJsonDocument()
+StaticJsonDocument<1024> RobotSettingManager::getJsonDocument()
 {
-    StaticJsonDocument<512> json;
+    StaticJsonDocument<1024> json;
 
     // Motor
     json["maxSpeed"] = maxSpeed;
@@ -108,20 +114,12 @@ StaticJsonDocument<512> RobotSettingManager::getJsonDocument()
     json["wifiLanPassword"] = wifiLanPassword;
     json["wifiSoftApSSID"] = wifiSoftApSSID;
     json["wifiSoftApPassword"] = wifiSoftApPassword;
-
-    return json;
-}
-
-StaticJsonDocument<400> RobotSettingManager::getUnoSettingDocument()
-{
-    StaticJsonDocument<400> json;
-
-    json["maxSpeed"] = maxSpeed;
-    json["servoSpeed"] = servoSpeed;
-    json["safeStopDistance"] = safeStopDistance;
-    json["turnFactor"] = turnFactor;
-    json["autoSpeedFactor"] = autoSpeedFactor;
-    json["autoSpeedMode"] = autoSpeedMode;
+    // HUD
+    json["hudRadarDistance"] = hudRadarDistance;
+    json["hudBatteryVoltage"] = hudBatteryVoltage;
+    json["hudOnGround"] = hudOnGround;
+    json["hudUnoLoopTime"] = hudUnoLoopTime;
+    json["hudEspLoopTime"] = hudEspLoopTime;
 
     return json;
 }
@@ -227,4 +225,31 @@ String RobotSettingManager::getWifiSoftApSSID()
 String RobotSettingManager::getWifiSoftApPassword()
 {
     return wifiSoftApPassword;
+}
+
+// HUD
+void RobotSettingManager::setHudRadarDistance(uint8_t hudRadarDistance)
+{
+    this->hudRadarDistance = hudRadarDistance;
+    saveSettings();
+}
+void RobotSettingManager::setHudBatteryVoltage(uint8_t hudBatteryVoltage)
+{
+    this->hudBatteryVoltage = hudBatteryVoltage;
+    saveSettings();
+}
+void RobotSettingManager::setHudOnGround(uint8_t hudOnGround)
+{
+    this->hudOnGround = hudOnGround;
+    saveSettings();
+}
+void RobotSettingManager::setHudUnoLoopTime(uint8_t hudUnoLoopTime)
+{
+    this->hudUnoLoopTime = hudUnoLoopTime;
+    saveSettings();
+}
+void RobotSettingManager::setHudEspLoopTime(uint8_t hudEspLoopTime)
+{
+    this->hudEspLoopTime = hudEspLoopTime;
+    saveSettings();
 }

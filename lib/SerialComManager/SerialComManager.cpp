@@ -4,14 +4,12 @@ SerialComManager::SerialComManager(
     TimeManager *timeManager,
     HttpServerManager *httpServerManager,
     WifiManager *wifiManager,
-    RobotStateManager *robotStateManager,
-    RobotSettingManager *robotSettingManager)
+    RobotStateManager *robotStateManager)
 {
     this->timeManager = timeManager;
     this->httpServerManager = httpServerManager;
     this->wifiManager = wifiManager;
     this->robotStateManager = robotStateManager;
-    this->robotSettingManager = robotSettingManager;
     lastSendTime = 0;
     lastReceiveTime = 0;
     syncRequestReceived = false;
@@ -44,7 +42,7 @@ void SerialComManager::receiveSerialData()
 
 void SerialComManager::processCommands(String serialPortData)
 {
-    StaticJsonDocument<400> json;
+    StaticJsonDocument<1024> json;
     deserializeJson(json, serialPortData);
 
     if (json.containsKey("syncRequest"))
@@ -106,11 +104,12 @@ void SerialComManager::sendDataToClient()
 void SerialComManager::handleUnoSyncRequest()
 {
 
-    // Process sync reply
+    // Uno has replied to sync request, send to the client a summary of the robot state
     if (syncReplyReceived)
     {
-        char data[400];
-        serializeJson(robotStateManager->getRobotStateSummary(), data, 400);
+
+        char data[1024];
+        serializeJson(robotStateManager->getRobotStateSummary(), data, 1024);
         httpServerManager->getWebSocket()->textAll(data);
         syncReplyReceived = false;
     }
@@ -118,8 +117,8 @@ void SerialComManager::handleUnoSyncRequest()
     // ESP has started, request a sync to Uno
     if (!syncRequestSent || syncRequestReceived)
     {
-        // Send init settings to Uno before sync request
-        StaticJsonDocument<512> json = robotSettingManager->getUnoSettingDocument();
+        // Send init settings to Uno with sync request
+        StaticJsonDocument<512> json = robotStateManager->getUnoSettingDocument();
         json["syncRequest"] = true;
         serializeJson(json, Serial2);
 
