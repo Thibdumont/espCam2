@@ -25,7 +25,7 @@ void RobotSettingManager::saveSettings()
     File file = LittleFS.open(SETTINGS_FILE, "w");
     if (!file)
     {
-        Serial.println("Failed to open file for reading");
+        Serial.println("Failed to open file for writing");
         return;
     }
 
@@ -47,7 +47,7 @@ void RobotSettingManager::loadSettings()
     File file = LittleFS.open(SETTINGS_FILE, "r");
     if (!file)
     {
-        Serial.println("Failed to open file for reading");
+        Serial.println("Failed to open settings file for reading. Can happen if ESP is powered off while writing. Reupload the settings file to ESP !");
         return;
     }
 
