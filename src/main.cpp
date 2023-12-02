@@ -27,7 +27,7 @@ void setup()
   timeManager = new TimeManager();
   wifiManager = new WifiManager(robotSettingManager);
   cameraManager = new CameraManager(robotSettingManager);
-  robotStateManager = new RobotStateManager(cameraManager, robotSettingManager);
+  robotStateManager = new RobotStateManager(cameraManager, robotSettingManager, timeManager);
   httpServerManager = new HttpServerManager(robotStateManager);
   serialComManager = new SerialComManager(timeManager, httpServerManager, wifiManager, robotStateManager);
 }
@@ -36,5 +36,4 @@ void loop()
 {
   timeManager->updateLoopTime();
   serialComManager->receiveSerialData();
-  // timeManager->displayLoopPerformanceStats();
 }

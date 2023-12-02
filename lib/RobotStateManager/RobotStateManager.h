@@ -4,11 +4,12 @@
 #include <ArduinoJson.h>
 #include "CameraManager.h"
 #include "RobotSettingManager.h"
+#include "TimeManager.h"
 
 class RobotStateManager
 {
 public:
-    RobotStateManager(CameraManager *, RobotSettingManager *);
+    RobotStateManager(CameraManager *, RobotSettingManager *, TimeManager *);
     uint64_t heartbeat;
     // Motor
     uint8_t maxSpeed;
@@ -60,6 +61,7 @@ public:
 private:
     CameraManager *cameraManager;
     RobotSettingManager *robotSettingManager;
+    TimeManager *timeManager;
 };
 
 #endif

@@ -1,9 +1,10 @@
 #include "RobotStateManager.h"
 
-RobotStateManager::RobotStateManager(CameraManager *cameraManager, RobotSettingManager *robotSettingManager)
+RobotStateManager::RobotStateManager(CameraManager *cameraManager, RobotSettingManager *robotSettingManager, TimeManager *timeManager)
 {
     this->cameraManager = cameraManager;
     this->robotSettingManager = robotSettingManager;
+    this->timeManager = timeManager;
     maxSpeed = 0;
     safeStopDistance = 0;
     turnFactor = 0;
@@ -162,6 +163,7 @@ StaticJsonDocument<1024> RobotStateManager::getRobotStateSummary()
 
     // Debug
     json["unoLoopDuration"] = unoLoopDuration;
+    json["espLoopDuration"] = timeManager->getLoopAverageDuration();
 
     return json;
 }
